@@ -1,0 +1,113 @@
+Board Layout
+ 
+1. 100 x 100 continuous space, origin at top left
+2. Sun centered at (50,50) with radius 10
+a. Fleets that cross sun are destroyed
+3. All planets and comets are placed with four fold symmetry
+ 
+Planets
+ 
+1. Planet = {id, owner, x, y, radius, ships, production}
+2. Owner → Player ID (0-3), -1 for neutral
+3. Radius → determined by production rate: 1 + ln(production)
+4. Production → integer from 1 to 5
+a. Each turn, an owned planet generates that many ships
+5. Ships → current garrison, starts between 5 and 99 (skewed towards lower values)
+ 
+Planet Types
+ 
+1. Orbiting Planets
+a. Planets whose orbital_radius + planet_radius < 50
+b. Rotate around the sun at a constant angular velocity (0.025 - 0.05 radians / turn, randomized per game)
+c. Use initial_planets + angular_velocity from obs to predict their position
+2. Static Planets
+a. Planets further from the center do not rotate
+3. Map contains 20-40 planets (5-10 symmetric groups of 4)
+a. At least 3 groups are guaranteed to be static
+b. At least 1 group is guaranteed to be orbiting
+ 
+Home Planets
+ 
+1. One symmetric group is randomly chosen as the starting planets
+2. In a 2-player game… players start on diagonally opposite planets (Q1 and Q4)
+3. In a 4-player game… each player gets one planet from the group
+4. Home planets start with ten ships
+ 
+Fleets
+ 
+1. Fleet = {id, owner, x, y, angle, from_planet_id, ships}
+2. Angle: Direction of travel (in radians)
+3. Ships: Number of ships in the fleet (does not change during travel)
+ 
+Fleet Speed
+ 
+1. Speed = 1.0 + (maxSpeed - 1.0) * log(ships / log(1000)) ^ 1.5
+a. Larger fleets move faster, approaching max speed (default 6.0)
+ 
+Fleet Movement
+ 
+1. Fleets move in a straight line at their computed speed each turn
+2. Fleet is removed if
+a. Goes out of bounds
+b. Crosses sun
+c. Collides with any planet (this triggers combat)
+3. NOTE: Entire line segment from initial point of fleet in previous frame to new point is checked so it does not jump through Sun, etc.
+ 
+Fleet Launch
+ 
+1. Each turn, your agent returns a list of moves: {from_planet_id, direction_angle, num_ships}
+2. You can
+a. Only launch from your own planets
+b. Cannot launch more ships than the planet currently has
+c. The fleet spawns just outside the planet’s radius in a given direction
+d. Can issue multiple launches from same or different planets in a single turn
+ 
+Comets
+ 
+1. Fly through the board or in highly elliptical orbits around the sun
+2. Spawn in groups of four (one per quadrant) at steps 50, 150, 250, 350, 450
+3. Characteristics
+a. Radius = 1 (fixed)
+b. Production = 1 ship / turn when owned
+c. Starting ships = random, minimum of four rolls from 1-99 (all comets in a group share the same starting ship rate)
+d. Speed = configurable via cometSpeed (default 4 units / turn)
+e. Identification: Check comet_planet_ids in obs to see which planet IDs are comets
+i. Otherwise comets are counted in the planets array and follow all normal planet rules
+4. comets observation field contains comet group data including
+a. Paths (full trajectory of each comet)
+b. Path_index (current position along path)
+ 
+Turn Order
+ 
+1. Comet expiration (remove comets that have left the board)
+2. Comet spawning (spawn new comet groups at designated steps)
+3. Fleet launch (process all player actions, creating new fleets)
+4. Production (all owned planets (including comets) generate ships)
+5. Fleet movement (move fleets along their headings_
+a. Check for out of bounds, sun collision, planet collision
+b. Fleets that hit planets are queued for combat
+6. Planet rotation and comet movement (orbiting planets revolve, comets advance along their path. Any fleet caught by a moving planet / comet is swept into combat with it)
+7. Combat resolution: resolve all queued planet combats)
+ 
+Combat
+ 
+1. All arriving fleets are grouped by owner, ships from same owner are summed
+2. Largest attacking force fights the second largest, difference in ships survives
+3. If there is surviving attacker
+a. If attacker is same owner as the planet, surviving ships are added to garrison
+b. If attacker is different owner, surviving ships fight the garrison
+i. If attackers exceed the garrison, planet changes ownership and garrison becomes surplus
+c. If two attackers tie, all attacking ships are destroyed (no survivors)
+ 
+Scoring
+ 
+1. Game ends when.. 500 turns or one person (or zero) remaining
+2. Final score = total ships on owned planets + total ships in owned fleets, highest score wins
+ 
+
+Observation Reference
+ 
+
+ 
+Configuration
+ 
