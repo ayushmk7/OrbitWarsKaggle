@@ -1,0 +1,351 @@
+{
+  "generated_at": "2026-05-06T23:54:27.854875+00:00",
+  "agents": [
+    "main.py",
+    "random"
+  ],
+  "start_seed": 1,
+  "games": 20,
+  "results": [
+    {
+      "seed": 1,
+      "output_path": "data/rollouts/main_vs_random_seed_0001.jsonl",
+      "num_steps": 156,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        155,
+        null
+      ]
+    },
+    {
+      "seed": 2,
+      "output_path": "data/rollouts/main_vs_random_seed_0002.jsonl",
+      "num_steps": 123,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        122,
+        null
+      ]
+    },
+    {
+      "seed": 3,
+      "output_path": "data/rollouts/main_vs_random_seed_0003.jsonl",
+      "num_steps": 402,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        401,
+        null
+      ]
+    },
+    {
+      "seed": 4,
+      "output_path": "data/rollouts/main_vs_random_seed_0004.jsonl",
+      "num_steps": 94,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        93,
+        null
+      ]
+    },
+    {
+      "seed": 5,
+      "output_path": "data/rollouts/main_vs_random_seed_0005.jsonl",
+      "num_steps": 184,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        183,
+        null
+      ]
+    },
+    {
+      "seed": 6,
+      "output_path": "data/rollouts/main_vs_random_seed_0006.jsonl",
+      "num_steps": 171,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        170,
+        null
+      ]
+    },
+    {
+      "seed": 7,
+      "output_path": "data/rollouts/main_vs_random_seed_0007.jsonl",
+      "num_steps": 110,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        109,
+        null
+      ]
+    },
+    {
+      "seed": 8,
+      "output_path": "data/rollouts/main_vs_random_seed_0008.jsonl",
+      "num_steps": 171,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        170,
+        null
+      ]
+    },
+    {
+      "seed": 9,
+      "output_path": "data/rollouts/main_vs_random_seed_0009.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 10,
+      "output_path": "data/rollouts/main_vs_random_seed_0010.jsonl",
+      "num_steps": 233,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        232,
+        null
+      ]
+    },
+    {
+      "seed": 11,
+      "output_path": "data/rollouts/main_vs_random_seed_0011.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 12,
+      "output_path": "data/rollouts/main_vs_random_seed_0012.jsonl",
+      "num_steps": 265,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        264,
+        null
+      ]
+    },
+    {
+      "seed": 13,
+      "output_path": "data/rollouts/main_vs_random_seed_0013.jsonl",
+      "num_steps": 187,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        186,
+        null
+      ]
+    },
+    {
+      "seed": 14,
+      "output_path": "data/rollouts/main_vs_random_seed_0014.jsonl",
+      "num_steps": 119,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        118,
+        null
+      ]
+    },
+    {
+      "seed": 15,
+      "output_path": "data/rollouts/main_vs_random_seed_0015.jsonl",
+      "num_steps": 106,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        105,
+        null
+      ]
+    },
+    {
+      "seed": 16,
+      "output_path": "data/rollouts/main_vs_random_seed_0016.jsonl",
+      "num_steps": 182,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        181,
+        null
+      ]
+    },
+    {
+      "seed": 17,
+      "output_path": "data/rollouts/main_vs_random_seed_0017.jsonl",
+      "num_steps": 124,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        123,
+        null
+      ]
+    },
+    {
+      "seed": 18,
+      "output_path": "data/rollouts/main_vs_random_seed_0018.jsonl",
+      "num_steps": 255,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        254,
+        null
+      ]
+    },
+    {
+      "seed": 19,
+      "output_path": "data/rollouts/main_vs_random_seed_0019.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 20,
+      "output_path": "data/rollouts/main_vs_random_seed_0020.jsonl",
+      "num_steps": 248,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        247,
+        null
+      ]
+    }
+  ]
+}
