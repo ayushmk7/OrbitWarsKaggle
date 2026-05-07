@@ -248,7 +248,7 @@ Implement:
 - `fleet_speed(ships, max_speed=6.0)` from the rules.
 - `turns_to_reach(distance, ships)`.
 - `segment_intersects_circle(start, end, center, radius)`.
-- `shot_hits_sun(source, target_or_point)`.
+- `shot_hits_sun(source, target, sun_center=(0,0), sun_radius=10)`.
 - `is_orbiting(planet)` using center distance and radius.
 - `predict_orbit_position(initial_planet, angular_velocity, turns)`.
 - Approximate moving-target intercept by sampling future positions.
