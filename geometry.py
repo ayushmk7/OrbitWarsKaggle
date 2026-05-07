@@ -11,7 +11,8 @@ def angle_to_xy(ax, ay, bx, by):
 
 def fleet_speed(ships, max_speed=6.0):
     ships = max(1, ships)
-    speed = 1.0 + math.log(ships, 1000.0) * (max_speed - 1.0)
+    ratio = math.log(ships) / math.log(1000.0)
+    speed = 1.0 + (max_speed - 1.0) * ratio**1.5
     return min(max_speed, max(1.0, speed))
 
 

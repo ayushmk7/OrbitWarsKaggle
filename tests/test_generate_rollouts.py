@@ -170,9 +170,9 @@ def test_build_agent_decisions_records_main_trace_without_action_mismatch_by_def
     assert decision["agent_name"] == "main.py"
     assert decision["agent_version"] == main.AGENT_VERSION
     assert decision["chosen_moves"] == [[1, 0.9272952180016122, 6]]
-    assert decision["candidates"][0]["score"] == 983
-    assert decision["candidates"][0]["travel_turns"] == 3
-    assert decision["candidates"][0]["score_components"]["production_value"] == 992
+    assert decision["candidates"][0]["score"] == 980
+    assert decision["candidates"][0]["travel_turns"] == 4
+    assert decision["candidates"][0]["score_components"]["production_value"] == 990
     assert errors == []
     assert decision["action_validation"]["mode"] == "disabled_for_replay_alignment"
 

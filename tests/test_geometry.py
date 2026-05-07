@@ -24,6 +24,14 @@ def test_fleet_speed_increases_with_ship_count_and_respects_cap():
     assert speeds[-1] <= 6.0
 
 
+def test_fleet_speed_matches_kaggle_environment_curve():
+    expected_500_ship_speed = 1.0 + 5.0 * (math.log(500, 1000.0) ** 1.5)
+
+    assert geometry.fleet_speed(1) == 1.0
+    assert geometry.fleet_speed(500) == pytest.approx(expected_500_ship_speed)
+    assert geometry.fleet_speed(1000) == 6.0
+
+
 def test_turns_to_reach_ceilings_distance_over_speed():
     assert geometry.turns_to_reach(10.0, 1) == 10
     assert geometry.turns_to_reach(0.0, 10) == 0

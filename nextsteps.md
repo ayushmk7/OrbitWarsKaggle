@@ -16,14 +16,16 @@
 - Current agent version is `nearest_sniper_v2_traceable`.
 - `generate_rollouts.py` can create rollout JSONL files and metadata summaries.
 - Tests exist for decision tracing and rollout metadata.
-- `results/local_rollouts_v2_smoke.json` shows many `action_mismatch` errors, so trace validation is not yet trustworthy.
+- `results/local_rollouts_v2_smoke.json` records zero rollout trace errors after action-alignment fixes.
+- `geometry.py` must match the installed Kaggle environment physics before further strategy tuning; in particular, fleet speed uses the `** 1.5` log curve from `README.md` and the environment source.
 - `plan.md` defines the long-term direction: strong rule-based agent first, optional DPO candidate ranking later.
 - `.gitignore` currently ignores `.venv`, `__pycache__`, and `*.py[cod]`, but generated data/results are not ignored.
 
 ## Submission Policy
 
 - Submit only code needed by the runtime agent.
-- Do not submit API keys, judge scripts, large rollout data, replay logs, or exploratory notebooks.
+- Do not submit API keys, judge scripts, or exploratory notebooks.
+- Keep rollout data, replay logs, competition downloads, and benchmark summaries in the repository so strategy changes can be audited from the same evidence later.
 - Do not depend on network calls, Kaggle CLI, local files, or environment secrets from `main.py`.
 - Promote a new agent version only when it beats the previous version on fixed held-out seeds or fixes a verified replay failure without a broader regression.
 - Prefer simple deterministic rule logic until the evaluation harness is reliable.
@@ -46,7 +48,7 @@ pytest tests/test_generate_rollouts.py tests/test_main_decisions.py -q
 python generate_rollouts.py --start-seed 1 --games 1 --output-dir data/rollouts_v2_smoke --summary results/local_rollouts_v2_smoke.json
 ```
 
-Expected: tests pass, but the generated summary currently contains `action_mismatch` entries for `main.py`.
+Expected before the Task 1 fix: tests pass, but the generated summary contains `action_mismatch` entries for `main.py`. Current fixed summaries should keep `errors` empty.
 
 - [ ] **Step 2: Identify the correct action timing**
 
@@ -90,29 +92,30 @@ git commit -m "fix rollout action trace validation"
 
 ---
 
-## Task 2: Protect Generated Artifacts
+## Task 2: Track Generated Artifacts
 
 **Files:**
 - Modify: `.gitignore`
-- Keep small benchmark summaries under: `results/` when they are useful for comparing agent versions.
+- Track rollout JSONL, replay logs, local competition downloads, and benchmark summaries when they support agent comparisons or debugging.
 
 - [ ] **Step 1: Decide what stays in git**
 
-Keep source files, tests, docs, and small benchmark summaries. Treat large rollout JSONL, replays, logs, and local competition downloads as generated artifacts.
+Keep source files, tests, docs, rollout JSONL, replays, logs, local competition downloads, and benchmark summaries. The only generated files to ignore by default are local caches, Python bytecode, virtual environments, and submission bundles.
 
 - [ ] **Step 2: Update `.gitignore`**
 
-Add:
+Keep generated evidence directories out of `.gitignore`. `.gitignore` should not ignore `data/`, `results/`, `replays/`, `logs/`, or `orbit-wars-data/`.
+
+Use:
 
 ```gitignore
-data/
-replays/
-logs/
-orbit-wars-data/
+.venv/
+__pycache__/
+*.py[cod]
 submission.tar.gz
 ```
 
-If small result summaries should remain tracked, do not ignore all of `results/`. Instead, avoid committing bulky result files manually.
+If `submission.tar.gz` is useful as a reproducibility artifact for a specific submission, add it explicitly with `git add -f submission.tar.gz`.
 
 - [ ] **Step 3: Check current tracked/generated files**
 
@@ -123,13 +126,13 @@ git status --short
 git ls-files data results replays logs orbit-wars-data 2>/dev/null
 ```
 
-Expected: no accidental large generated files are staged for submission work.
+Expected: generated evidence files are visible to git when present, and only local caches or submission bundles are ignored.
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add .gitignore
-git commit -m "ignore generated rollout artifacts"
+git commit -m "track generated rollout evidence"
 ```
 
 ---
@@ -224,7 +227,7 @@ Add:
 Cover:
 
 - horizontal, vertical, and diagonal angles
-- fleet speed increases with ship count
+- fleet speed increases with ship count and matches the Kaggle environment `** 1.5` log curve
 - shots through `(50, 50)` hit the sun
 - off-center shots do not hit the sun
 - tangent or near-tangent behavior is deterministic
@@ -351,42 +354,670 @@ git commit -m "avoid sun-blocked launches"
 
 ## Task 7: Add Ship Budgeting And Overcommit Control
 
+**Goal:** Prevent the agent from draining a source planet across multiple good-looking launches, while still allowing one strong planet to make more than one profitable capture when it has enough surplus ships.
+
+**Prerequisite:** `geometry.fleet_speed(...)` and `turns_to_reach(...)` must match the installed Kaggle environment formula before tuning source budgets. If this has not been corrected yet, fix it and refresh the quick benchmark first.
+
+**Why this matters now:** Task 5 made candidate scoring production-aware, and Task 6 made unsafe sun shots illegal. The next failure mode is allocation: if selection later allows multiple accepted candidates from one source, each candidate can look legal in isolation but the combined moves can over-spend the same source planet. Task 7 makes budgeting explicit and traceable before adding defense, orbit prediction, or richer candidate generation.
+
 **Files:**
 - Modify: `main.py`
 - Test: `tests/test_main_decisions.py`
+- Benchmark output: `results/quick_budgeting.json`
 
-- [ ] **Step 1: Track per-source available ships**
+**Important current code shape:**
+- `decide_with_trace(obs)` builds `source_candidates` for each owned planet.
+- Each candidate already has `ships`, `score`, `legal`, `rejection_reason`, and `score_components`.
+- Current code chooses only one best legal candidate per source, so it does not yet spend from a source budget across multiple accepted moves.
+- This task should make source budgeting reusable for future tasks that may choose multiple moves per source.
 
-When multiple candidates originate from the same planet, choose moves in descending score order and subtract ships from that source budget after each accepted move.
+**Behavior contract after Task 7:**
+- Every candidate still appears in `decision["candidates"]`.
+- `agent(obs)` still returns only raw move lists.
+- Candidate trace data includes budget fields so bad choices can be debugged from rollout JSONL.
+- A source planet never sends more ships than its available budget after reserve.
+- Multiple candidates from the same source are considered in descending `score`.
+- Candidates that no longer fit the remaining source budget are rejected with `rejection_reason == "source_budget_exhausted"`.
+- Candidates rejected because they would violate reserve are rejected with `rejection_reason == "reserve_too_low"`.
+- Existing rejection reasons from earlier tasks remain valid: `sun_blocked`, `insufficient_source_ships`, and `not_highest_scoring_target_for_source` should not disappear unless replaced intentionally by budget-specific reasons.
 
-- [ ] **Step 2: Keep reserves**
+### Task 7.1: Define Phase-Aware Reserve Rules
 
-Use phase-aware minimum reserves:
+- [ ] **Step 1: Add helper constants near `AGENT_VERSION` in `main.py`**
 
-- early game: keep at least 3 ships or one turn of production
-- midgame: keep at least 5 ships on valuable planets
-- late game: keep enough ships to avoid easy flips unless launching improves final score
+Use named constants instead of magic numbers so future tuning can compare versions clearly.
 
-- [ ] **Step 3: Add tests**
-
-Cover:
-
-- no source sends more ships than it has
-- multiple profitable moves from one source are capped by budget
-- a high-value home planet keeps a reserve
-
-- [ ] **Step 4: Benchmark**
-
-```bash
-pytest tests/test_main_decisions.py -q
-python evaluate.py --start-seed 1 --games 50 --opponents random --summary results/quick_budgeting.json
+```python
+MAX_TURNS = 500
+EARLY_GAME_END = 150
+LATE_GAME_START = 400
+MIN_PROFITABLE_SCORE = 0
 ```
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 2: Add `_game_phase(step)` below `_candidate_id(...)`**
+
+```python
+def _game_phase(step):
+    if step < EARLY_GAME_END:
+        return "early"
+    if step >= LATE_GAME_START:
+        return "late"
+    return "mid"
+```
+
+- [ ] **Step 3: Add `_desired_reserve(source, step, score)` below `_game_phase(...)`**
+
+This codifies the phase-aware reserve policy:
+- early game: keep at least 3 ships or one turn of production
+- midgame: keep at least 5 ships on valuable planets
+- late game: allow more spending for positive final-score launches, but never drain to zero by default
+
+```python
+def _desired_reserve(source, step, score):
+    phase = _game_phase(step)
+    production = max(0, source.production)
+
+    if phase == "early":
+        return max(3, production)
+
+    if phase == "mid":
+        if production >= 5:
+            return max(5, production)
+        return max(3, production)
+
+    if score > MIN_PROFITABLE_SCORE:
+        return max(1, production // 2)
+    return max(3, production)
+```
+
+- [ ] **Step 4: Add tests for the reserve helper**
+
+Append tests to `tests/test_main_decisions.py`. Use `main.Planet` so tests match the fallback/real namedtuple field names.
+
+```python
+def test_desired_reserve_is_phase_aware():
+    valuable = main.Planet(1, 0, 0.0, 0.0, 1.0, 50, 8)
+    low_value = main.Planet(2, 0, 0.0, 0.0, 1.0, 50, 2)
+
+    assert main._desired_reserve(valuable, step=20, score=100) == 8
+    assert main._desired_reserve(low_value, step=20, score=100) == 3
+    assert main._desired_reserve(valuable, step=250, score=100) == 8
+    assert main._desired_reserve(low_value, step=250, score=100) == 3
+    assert main._desired_reserve(valuable, step=450, score=100) == 4
+    assert main._desired_reserve(valuable, step=450, score=-1) == 8
+```
+
+- [ ] **Step 5: Run the new reserve-helper test and confirm it fails first**
 
 ```bash
-git add main.py tests/test_main_decisions.py results/quick_budgeting.json
+python -m pytest tests/test_main_decisions.py::test_desired_reserve_is_phase_aware -q
+```
+
+Expected before implementation: fail with `AttributeError: module 'main' has no attribute '_desired_reserve'`.
+
+- [ ] **Step 6: Implement the constants and helper functions**
+
+Add the constants and helpers exactly as described above, then rerun:
+
+```bash
+python -m pytest tests/test_main_decisions.py::test_desired_reserve_is_phase_aware -q
+```
+
+Expected after implementation: pass.
+
+### Task 7.2: Add Budget Fields To Candidate Traces
+
+- [ ] **Step 1: Replace hardcoded reserve calculation in candidate generation**
+
+Current Task 5 logic computes reserve before score with:
+
+```python
+desired_reserve = max(1, mine.production)
+```
+
+Change the candidate-building flow so it first computes a score with a provisional reserve, then uses `_desired_reserve(...)` for the actual budget decision.
+
+Recommended minimal structure:
+
+```python
+base_reserve = max(1, mine.production)
+base_reserve_penalty = max(0, base_reserve - source_reserve_after)
+production_value = target.production * remaining_after_arrival
+ship_cost = ships_needed
+travel_cost = travel_turns
+preliminary_score = production_value - ship_cost - travel_cost - base_reserve_penalty
+desired_reserve = _desired_reserve(mine, step, preliminary_score)
+reserve_penalty = max(0, desired_reserve - source_reserve_after)
+score = production_value - ship_cost - travel_cost - reserve_penalty
+```
+
+- [ ] **Step 2: Add trace fields to each candidate**
+
+At the top level of each candidate, add:
+
+```python
+"source_budget_before": mine.ships,
+"source_budget_after": mine.ships - ships_needed,
+"desired_reserve": desired_reserve,
+```
+
+Inside `score_components`, keep the existing reserve fields and add:
+
+```python
+"game_phase": _game_phase(step),
+"preliminary_score": preliminary_score,
+"base_reserve": base_reserve,
+```
+
+- [ ] **Step 3: Add a test proving budget fields exist**
+
+```python
+def test_candidates_include_budget_trace_fields():
+    result = main.decide_with_trace(make_obs())
+    candidate = result["decision"]["candidates"][0]
+
+    assert "source_budget_before" in candidate
+    assert "source_budget_after" in candidate
+    assert "desired_reserve" in candidate
+    assert candidate["score_components"]["game_phase"] == "early"
+    assert "preliminary_score" in candidate["score_components"]
+    assert "base_reserve" in candidate["score_components"]
+```
+
+- [ ] **Step 4: Run the budget trace test and confirm it fails first**
+
+```bash
+python -m pytest tests/test_main_decisions.py::test_candidates_include_budget_trace_fields -q
+```
+
+Expected before implementation: fail because the new trace fields do not exist.
+
+- [ ] **Step 5: Implement the trace fields and rerun**
+
+```bash
+python -m pytest tests/test_main_decisions.py::test_candidates_include_budget_trace_fields -q
+```
+
+Expected after implementation: pass.
+
+### Task 7.3: Select Moves With Per-Source Budgets
+
+- [ ] **Step 1: Add `_select_budgeted_candidates(source_candidates)` below `_desired_reserve(...)`**
+
+This helper should accept all candidates for one source planet, consider legal candidates by descending score, and mutate candidates only through trace fields/rejection reasons. Keeping it as a helper makes the allocation behavior testable without a full game observation.
+
+```python
+def _select_budgeted_candidates(source_candidates):
+    if not source_candidates:
+        return []
+
+    source_budget = source_candidates[0]["source_budget_before"]
+    selected = []
+
+    for candidate in sorted(source_candidates, key=lambda item: item["score"], reverse=True):
+        candidate["source_budget_before"] = source_budget
+        candidate["source_budget_after"] = source_budget - candidate["ships"]
+
+        if not candidate["legal"]:
+            continue
+
+        if candidate["score"] <= MIN_PROFITABLE_SCORE:
+            candidate["legal"] = False
+            candidate["rejection_reason"] = "non_positive_score"
+            continue
+
+        if candidate["ships"] > source_budget:
+            candidate["legal"] = False
+            candidate["rejection_reason"] = "source_budget_exhausted"
+            continue
+
+        if source_budget - candidate["ships"] < candidate["desired_reserve"]:
+            candidate["legal"] = False
+            candidate["rejection_reason"] = "reserve_too_low"
+            continue
+
+        selected.append(candidate)
+        source_budget -= candidate["ships"]
+        candidate["source_budget_after"] = source_budget
+
+    selected_ids = {candidate["candidate_id"] for candidate in selected}
+    for candidate in source_candidates:
+        if candidate["candidate_id"] not in selected_ids and candidate["legal"]:
+            candidate["legal"] = False
+            candidate["rejection_reason"] = "source_budget_exhausted"
+
+    return selected
+```
+
+- [ ] **Step 2: Replace single-best selection in `decide_with_trace(...)`**
+
+Replace this Task 5 selection shape:
+
+```python
+legal_candidates = [candidate for candidate in source_candidates if candidate["legal"]]
+best = max(legal_candidates, key=lambda candidate: candidate["score"], default=None)
+for candidate in source_candidates:
+    if best is not None and candidate["candidate_id"] == best["candidate_id"]:
+        moves.append(candidate["move"])
+        decision["chosen_candidate_ids"].append(candidate["candidate_id"])
+    elif candidate["legal"]:
+        candidate["rejection_reason"] = "not_highest_scoring_target_for_source"
+    decision["candidates"].append(candidate)
+```
+
+With:
+
+```python
+selected = _select_budgeted_candidates(source_candidates)
+selected_ids = {candidate["candidate_id"] for candidate in selected}
+for candidate in source_candidates:
+    if candidate["candidate_id"] in selected_ids:
+        moves.append(candidate["move"])
+        decision["chosen_candidate_ids"].append(candidate["candidate_id"])
+    decision["candidates"].append(candidate)
+```
+
+- [ ] **Step 3: Update chosen reason**
+
+When at least one move is selected, use:
+
+```python
+decision["chosen_reason"] = "selected budgeted production-scored legal targets"
+```
+
+- [ ] **Step 4: Add a direct unit test for `_select_budgeted_candidates(...)`**
+
+Use plain candidate dictionaries so the budget algorithm can be tested without depending on geometry or observation parsing.
+
+```python
+def candidate_for_budget(candidate_id, ships, score, budget=10, reserve=2, legal=True):
+    return {
+        "candidate_id": candidate_id,
+        "move": [1, 0.0, ships],
+        "ships": ships,
+        "score": score,
+        "legal": legal,
+        "rejection_reason": None if legal else "preexisting_rejection",
+        "source_budget_before": budget,
+        "source_budget_after": budget - ships,
+        "desired_reserve": reserve,
+    }
+```
+
+```python
+def test_select_budgeted_candidates_accepts_multiple_until_budget_exhausted():
+    candidates = [
+        candidate_for_budget("a", ships=4, score=100),
+        candidate_for_budget("b", ships=3, score=90),
+        candidate_for_budget("c", ships=3, score=80),
+    ]
+
+    selected = main._select_budgeted_candidates(candidates)
+
+    assert [candidate["candidate_id"] for candidate in selected] == ["a", "b"]
+    assert candidates[0]["source_budget_after"] == 6
+    assert candidates[1]["source_budget_after"] == 3
+    assert candidates[2]["legal"] is False
+    assert candidates[2]["rejection_reason"] == "source_budget_exhausted"
+```
+
+- [ ] **Step 5: Add a direct unit test for non-positive scores**
+
+```python
+def test_select_budgeted_candidates_rejects_non_positive_scores():
+    candidates = [
+        candidate_for_budget("a", ships=2, score=0),
+        candidate_for_budget("b", ships=2, score=-5),
+    ]
+
+    selected = main._select_budgeted_candidates(candidates)
+
+    assert selected == []
+    assert [candidate["rejection_reason"] for candidate in candidates] == [
+        "non_positive_score",
+        "non_positive_score",
+    ]
+```
+
+- [ ] **Step 6: Run the selector tests and confirm they fail first**
+
+```bash
+python -m pytest \
+  tests/test_main_decisions.py::test_select_budgeted_candidates_accepts_multiple_until_budget_exhausted \
+  tests/test_main_decisions.py::test_select_budgeted_candidates_rejects_non_positive_scores \
+  -q
+```
+
+Expected before implementation: fail because `_select_budgeted_candidates` does not exist.
+
+- [ ] **Step 7: Implement `_select_budgeted_candidates(...)` and selection replacement**
+
+After implementation, rerun:
+
+```bash
+python -m pytest \
+  tests/test_main_decisions.py::test_select_budgeted_candidates_accepts_multiple_until_budget_exhausted \
+  tests/test_main_decisions.py::test_select_budgeted_candidates_rejects_non_positive_scores \
+  -q
+```
+
+Expected after implementation: pass.
+
+### Task 7.4: Add Observation-Level Budgeting Tests
+
+- [ ] **Step 1: Add a test proving one source can make multiple profitable moves if budget allows**
+
+This test is the main behavior change from the current one-move-per-source logic.
+
+```python
+def test_agent_can_choose_multiple_budgeted_moves_from_one_source():
+    obs = {
+        "player": 0,
+        "step": 120,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 30, 3],
+            [2, -1, 5.0, 0.0, 1.0, 2, 8],
+            [3, -1, 0.0, 6.0, 1.0, 2, 7],
+            [4, -1, 10.0, 0.0, 1.0, 20, 1],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+
+    assert len(result["moves"]) == 2
+    assert sum(move[2] for move in result["moves"]) == 6
+    assert result["decision"]["chosen_reason"] == "selected budgeted production-scored legal targets"
+    chosen_targets = {
+        candidate["target_planet_id"]
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_id"] in result["decision"]["chosen_candidate_ids"]
+    }
+    assert chosen_targets == {2, 3}
+```
+
+- [ ] **Step 2: Add a test proving the source never overcommits**
+
+```python
+def test_agent_caps_multiple_profitable_moves_by_source_budget():
+    obs = {
+        "player": 0,
+        "step": 120,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 10, 3],
+            [2, -1, 5.0, 0.0, 1.0, 2, 8],
+            [3, -1, 0.0, 6.0, 1.0, 2, 7],
+            [4, -1, 8.0, 0.0, 1.0, 2, 6],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+
+    source_spend = sum(move[2] for move in result["moves"] if move[0] == 1)
+    assert source_spend <= 7
+    assert len(result["moves"]) == 2
+    rejected = [
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["rejection_reason"] == "source_budget_exhausted"
+    ]
+    assert rejected
+```
+
+Here `7` is the source budget after the early-game reserve of `max(3, production) == 3`.
+
+- [ ] **Step 3: Add a test proving a valuable midgame source keeps reserve**
+
+```python
+def test_valuable_midgame_source_keeps_reserve():
+    obs = {
+        "player": 0,
+        "step": 250,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 12, 8],
+            [2, -1, 5.0, 0.0, 1.0, 3, 8],
+            [3, -1, 0.0, 6.0, 1.0, 3, 7],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+
+    source_spend = sum(move[2] for move in result["moves"] if move[0] == 1)
+    assert source_spend <= 4
+    assert len(result["moves"]) == 1
+    assert any(
+        candidate["rejection_reason"] == "reserve_too_low"
+        for candidate in result["decision"]["candidates"]
+    )
+```
+
+Here `4` is `source.ships - desired_reserve == 12 - 8`.
+
+- [ ] **Step 4: Add a test proving previous sun and insufficient-ship rejections still win priority**
+
+```python
+def test_budgeting_preserves_sun_blocked_and_insufficient_ship_reasons():
+    obs = {
+        "player": 0,
+        "step": 100,
+        "planets": [
+            [1, 0, 20.0, 50.0, 1.0, 2, 3],
+            [2, -1, 80.0, 50.0, 1.0, 5, 20],
+            [3, -1, 20.0, 80.0, 1.0, 5, 3],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    candidates_by_target = {
+        candidate["target_planet_id"]: candidate
+        for candidate in result["decision"]["candidates"]
+    }
+
+    assert candidates_by_target[2]["rejection_reason"] == "sun_blocked"
+    assert candidates_by_target[3]["rejection_reason"] == "insufficient_source_ships"
+```
+
+- [ ] **Step 5: Run all new observation tests and confirm they fail first**
+
+```bash
+python -m pytest \
+  tests/test_main_decisions.py::test_agent_can_choose_multiple_budgeted_moves_from_one_source \
+  tests/test_main_decisions.py::test_agent_caps_multiple_profitable_moves_by_source_budget \
+  tests/test_main_decisions.py::test_valuable_midgame_source_keeps_reserve \
+  tests/test_main_decisions.py::test_budgeting_preserves_sun_blocked_and_insufficient_ship_reasons \
+  -q
+```
+
+Expected before implementation: at least the multiple-move test fails because current code chooses only one move per source.
+
+- [ ] **Step 6: Implement the minimal code until the observation tests pass**
+
+Do not add defense, orbit prediction, global multi-source allocation, or opponent modeling in this task. Keep scope limited to per-source budgeting.
+
+Run:
+
+```bash
+python -m pytest \
+  tests/test_main_decisions.py::test_agent_can_choose_multiple_budgeted_moves_from_one_source \
+  tests/test_main_decisions.py::test_agent_caps_multiple_profitable_moves_by_source_budget \
+  tests/test_main_decisions.py::test_valuable_midgame_source_keeps_reserve \
+  tests/test_main_decisions.py::test_budgeting_preserves_sun_blocked_and_insufficient_ship_reasons \
+  -q
+```
+
+Expected after implementation: pass.
+
+### Task 7.5: Update Existing Tests For The New Selection Reason
+
+- [ ] **Step 1: Update tests that assert the previous chosen reason**
+
+Any test expecting:
+
+```python
+"selected highest-scoring legal production target per owned planet"
+```
+
+should now expect:
+
+```python
+"selected budgeted production-scored legal targets"
+```
+
+Files likely affected:
+- `tests/test_main_decisions.py`
+- `tests/test_generate_rollouts.py`
+
+- [ ] **Step 2: Keep raw action tests focused on action shape**
+
+If `test_agent_returns_raw_moves_for_existing_strategy` starts returning more than one move because `make_obs()` has multiple positive-score legal targets, either:
+- adjust `make_obs()` so only the expected target is profitable, or
+- change the assertion to prove all returned items are raw move lists:
+
+```python
+def test_agent_returns_raw_moves_for_existing_strategy():
+    moves = main.agent(make_obs())
+
+    assert moves
+    assert all(isinstance(move, list) for move in moves)
+    assert all(len(move) == 3 for move in moves)
+```
+
+Prefer the smallest edit that keeps the test about the wrapper contract instead of locking in a strategy detail.
+
+- [ ] **Step 3: Run the existing decision and rollout tests**
+
+```bash
+python -m pytest tests/test_main_decisions.py tests/test_generate_rollouts.py -q
+```
+
+Expected: all tests pass.
+
+### Task 7.6: Benchmark And Inspect Budgeting
+
+- [ ] **Step 1: Run focused tests**
+
+```bash
+python -m pytest tests/test_main_decisions.py tests/test_geometry.py -q
+```
+
+Expected: all tests pass.
+
+- [ ] **Step 2: Run the 50-game budgeting benchmark**
+
+Use Python 3.11 if the current Python 3.13 environment cannot import `kaggle_environments`.
+
+```bash
+python3.11 evaluate.py --start-seed 1 --games 50 --opponents random --summary results/quick_budgeting.json
+```
+
+Expected command output shape:
+
+```text
+Agent version: nearest_sniper_v2_traceable
+Games: 50
+Wins: <integer>/50
+Win rate: <decimal>
+Errors: 0
+Summary: results/quick_budgeting.json
+```
+
+- [ ] **Step 3: Inspect summary metrics**
+
+Open `results/quick_budgeting.json` and check:
+
+- `error_count` is `0`
+- `games` is `50`
+- `start_seed` is `1`
+- `opponents` is `["random"]`
+- `average_final_ship_score` is not a large regression from `results/quick_sun_safe.json`
+- `win_rate` is not a large regression from `results/quick_sun_safe.json`
+
+Promotion criterion:
+- Prefer keeping Task 7 if it improves or roughly preserves the Task 6 benchmark.
+- If win rate drops by more than 0.10 or average final ship score drops by more than 10 percent, keep the tests but tune reserve thresholds before promoting.
+
+- [ ] **Step 4: Inspect rollout traces for overcommit**
+
+Use a small script to prove no selected source overspends in the generated rollout traces:
+
+```bash
+python - <<'PY'
+import json
+from collections import defaultdict
+from pathlib import Path
+
+violations = []
+for path in Path("data/rollouts_v2/nearest_sniper_v2_traceable").glob("*.jsonl"):
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        record = json.loads(line)
+        if record.get("type") != "step":
+            continue
+        for decision in record.get("agent_decisions", []):
+            moves_by_source = defaultdict(int)
+            source_ships = {}
+            for candidate in decision.get("candidates", []):
+                source_id = candidate["source_planet_id"]
+                source_ships[source_id] = candidate["score_components"]["source_ships"]
+            for move in decision.get("chosen_moves", []):
+                moves_by_source[move[0]] += move[2]
+            for source_id, ships_sent in moves_by_source.items():
+                if ships_sent > source_ships.get(source_id, 0):
+                    violations.append((str(path), line_number, source_id, ships_sent, source_ships.get(source_id)))
+
+if violations:
+    print("overcommit violations:")
+    for violation in violations[:20]:
+        print(violation)
+    raise SystemExit(1)
+
+print("No overcommit violations found")
+PY
+```
+
+Expected:
+
+```text
+No overcommit violations found
+```
+
+- [ ] **Step 5: Run the full test suite**
+
+```bash
+python -m pytest -q
+```
+
+Expected: all tests pass.
+
+### Task 7.7: Commit
+
+- [ ] **Step 1: Review changed files**
+
+```bash
+git status --short
+git diff -- main.py tests/test_main_decisions.py tests/test_generate_rollouts.py nextsteps.md
+```
+
+Expected:
+- `main.py` contains phase-aware reserves and `_select_budgeted_candidates(...)`.
+- `tests/test_main_decisions.py` contains helper, selector, and observation-level budget tests.
+- `tests/test_generate_rollouts.py` only changes expected trace wording/score fields if needed.
+- `results/quick_budgeting.json` exists.
+
+- [ ] **Step 2: Commit source, tests, and benchmark evidence**
+
+```bash
+git add main.py tests/test_main_decisions.py tests/test_generate_rollouts.py results/quick_budgeting.json
 git commit -m "add source ship budgeting"
+```
+
+If this detailed Task 7 plan update is part of the same change, include it:
+
+```bash
+git add nextsteps.md
+git commit -m "detail source ship budgeting plan"
 ```
 
 ---
@@ -789,7 +1420,8 @@ The final Kaggle runtime must not require `dpo_judge.py`, API keys, or network c
 - [ ] `pytest -q` passes.
 - [ ] Held-out evaluation summary exists under `results/`.
 - [ ] Rollout trace validation has no false `action_mismatch` errors.
-- [ ] No generated data, logs, replays, secrets, or virtualenv files are bundled.
+- [ ] Generated data, logs, and replays may be tracked in git, but are not bundled into the runtime submission package.
+- [ ] No secrets, virtualenv files, tests, or local-only analysis scripts are bundled.
 - [ ] No API keys, network calls, debug spam, browser calls, or local file writes exist in the Kaggle runtime path.
 - [ ] Agent runtime is comfortably below the turn limit.
 - [ ] Kaggle rules have been accepted.

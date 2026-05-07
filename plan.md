@@ -51,19 +51,20 @@ Revisit PPO only if:
 Important files:
 
 - `README.md`: full game rules, observation fields, action format, and configuration.
-- `rules.txt`: compact rule notes.
 - `agents.md`: local testing, Kaggle CLI, submission, replay, and logs workflow.
-- `main.py`: currently a valid simple nearest-planet agent.
-- `agent.py`: contains an `all_in` strategy, but it references missing `angle_finder`.
-- `math.py`: unfinished and unsafe; it shadows Python's standard `math` module and contains invalid code.
-- `simulation.py`: local rendering script, but it depends on the incomplete `agent.py`.
+- `nextsteps.md`: operational task list for improving and submitting the agent.
+- `main.py`: valid Kaggle entrypoint with `agent(obs)` and traceable production-aware, sun-safe candidate decisions.
+- `geometry.py`: tested distance, angle, fleet-speed, travel-time, and sun-intersection helpers.
+- `generate_rollouts.py`: local rollout generator with decision traces.
+- `evaluate.py`: fixed-seed evaluation command that writes benchmark summaries.
+- `tests/`: focused tests for geometry, decision traces, rollout metadata, and evaluation summaries.
 
 Immediate cleanup priorities:
 
 - Keep `main.py` as the submission entrypoint.
-- Replace or ignore `agent.py` and `math.py` until fixed.
-- Rename future math helpers to `geometry.py`, not `math.py`.
-- Make local testing repeatable before adding strategy complexity.
+- Keep helper modules small and package every runtime helper imported by `main.py`.
+- Keep local testing and benchmark summaries repeatable before promoting strategy changes.
+- Treat `nextsteps.md` as the execution plan and this file as the strategic overview.
 
 ## Data And Kaggle Workflow
 
@@ -195,7 +196,9 @@ Use replays/logs to identify:
 
 ### 5. Data Hygiene
 
-Do not commit large generated datasets by default. Keep source code and small benchmark summaries in git, but treat large rollout/replay/log folders as generated artifacts unless we explicitly decide otherwise.
+Generated evidence is allowed in the repository. Keep rollout JSONL, benchmark summaries, replay files, logs, and competition downloads when they support debugging, strategy comparisons, or reproducibility. These files are evidence for development, not runtime dependencies.
+
+Do not bundle generated evidence into Kaggle runtime submissions unless it is explicitly required by the submitted agent. `submission.tar.gz` should contain only `main.py` and runtime helper modules such as `geometry.py` or `prediction.py`.
 
 Minimum reproducibility rule:
 
@@ -245,10 +248,10 @@ Implement:
 
 - `distance(a, b)`.
 - `angle_to(source, target)` using `atan2(dy, dx)`.
-- `fleet_speed(ships, max_speed=6.0)` from the rules.
+- `fleet_speed(ships, max_speed=6.0)` from the rules: `1.0 + (max_speed - 1.0) * (log(ships) / log(1000)) ** 1.5`, clamped to `[1.0, max_speed]`.
 - `turns_to_reach(distance, ships)`.
 - `segment_intersects_circle(start, end, center, radius)`.
-- `shot_hits_sun(source, target, sun_center=(0,0), sun_radius=10)`.
+- `shot_hits_sun(source, target, sun_center=(50,50), sun_radius=10)`.
 - `is_orbiting(planet)` using center distance and radius.
 - `predict_orbit_position(initial_planet, angular_velocity, turns)`.
 - Approximate moving-target intercept by sampling future positions.
@@ -258,7 +261,7 @@ Tests:
 - Angles for horizontal, vertical, and diagonal shots.
 - Sun-blocked shots through `(50, 50)` are rejected.
 - Safe shots around the sun are accepted.
-- Fleet speed increases with ship count.
+- Fleet speed increases with ship count and matches the Kaggle environment `** 1.5` log curve.
 - Orbit prediction keeps planets on the same radius around the sun.
 
 ### 2. Candidate Move Generation
@@ -448,7 +451,7 @@ Suggested output files:
 
 - `results/quick_<agent_version>.json`
 - `results/standard_<agent_version>.json`
-- `data/rollouts/<agent_version>_<seed>.jsonl`
+- `data/rollouts_v2/<agent_version>/<agent_version>_vs_<opponent>_seed_<seed>.jsonl`
 
 ## DPO Plan
 
@@ -546,10 +549,9 @@ DPO acceptance criteria:
 - Install/verify Kaggle CLI.
 - Confirm Kaggle competition access.
 - Download competition files with `kaggle competitions download orbit-wars -p orbit-wars-data`.
-- Create local generated-data folders as needed: `data/rollouts`, `data/preferences`, `results`, `replays`, `logs`.
+- Create local generated-data folders as needed: `data/rollouts_v2`, `data/preferences`, `results`, `replays`, `logs`.
 - Keep `main.py` runnable.
 - Make local smoke testing work.
-- Stop using incomplete `agent.py`/`math.py` in submission path.
 - Confirm game can run against random.
 
 ### Phase 1: Geometry
@@ -561,7 +563,7 @@ DPO acceptance criteria:
 
 ### Phase 2: Candidate Generator
 
-- Generate legal expansion, attack, reinforce, consolidate, comet, endgame, and wait candidates.
+- Generate legal expansion candidates first, then add attack, reinforce, consolidate, comet, endgame, and wait candidates as separate tested increments.
 - Bound candidates for speed.
 - Add per-source ship budget tracking.
 
@@ -629,21 +631,23 @@ Before each submission:
 - No API keys, network calls, or DPO judging code in the runtime submission path.
 - Local smoke test passes.
 - Batch evaluation has been run.
-- Data folders and generated artifacts are not accidentally bundled unless needed.
+- Data folders and generated artifacts may be tracked in git, but are not accidentally bundled into the Kaggle runtime package unless needed.
 - Runtime is safely below the per-turn limit.
 - Moves are legal after final validation.
 - If DPO/ranker is used, heuristic fallback still works.
 
 ## Final Priority Order
 
-1. Rule-based geometry correctness.
-2. Production-aware expansion.
-3. Sun-safe and orbit-aware targeting.
-4. Defense against incoming fleets.
-5. Opportunistic attacks.
-6. Endgame score conversion.
-7. Evaluation harness.
-8. DPO candidate ranking.
-9. Kaggle replay feedback loop.
+1. Evaluation harness and trace validation.
+2. Rule-based geometry correctness, including fleet-speed parity with the Kaggle environment.
+3. Production-aware expansion.
+4. Sun-safe targeting.
+5. Source ship budgeting and overcommit control.
+6. Orbit-aware targeting.
+7. Defense against incoming fleets.
+8. Opportunistic attacks.
+9. Endgame score conversion.
+10. DPO candidate ranking.
+11. Kaggle replay feedback loop.
 
 The strongest efficient path is not PT/FT and not raw RL. It is a rule-based tactical engine first, then DPO-assisted candidate ranking once we can generate meaningful preferences from self-play and replay outcomes.

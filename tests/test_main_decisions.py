@@ -53,9 +53,9 @@ def test_decide_with_trace_records_candidates_scores_and_chosen_reason():
     assert chosen["source_planet_id"] == 1
     assert chosen["target_planet_id"] == 2
     assert chosen["move"] == result["moves"][0]
-    assert chosen["travel_turns"] == 3
-    assert chosen["score"] == 4841
-    assert chosen["score_components"]["production_value"] == 4850
+    assert chosen["travel_turns"] == 4
+    assert chosen["score"] == 4830
+    assert chosen["score_components"]["production_value"] == 4840
     assert chosen["legal"] is True
     assert chosen["rejection_reason"] is None
     assert chosen["reason"] == "highest production-adjusted expansion score"
