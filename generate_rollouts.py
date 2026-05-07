@@ -14,6 +14,8 @@ import main as main_agent
 
 SCHEMA_VERSION = 2
 GENERATOR_VERSION = "rollout_generator_v2_decision_trace"
+DEFAULT_OUTPUT_DIR = Path("data/rollouts_v2") / main_agent.AGENT_VERSION
+DEFAULT_SUMMARY_PATH = Path("results") / f"local_rollouts_{main_agent.AGENT_VERSION}.json"
 
 
 def as_plain(value: Any) -> Any:
@@ -118,13 +120,50 @@ def _moves_equal(left: Any, right: Any) -> bool:
     return json.dumps(as_plain(left), sort_keys=True) == json.dumps(as_plain(right), sort_keys=True)
 
 
+def make_recording_agent(agent_index: int, agent_name: str, sink: list[dict[str, Any]]):
+    """Wrap main.py so rollout traces record the exact decision used for action."""
+
+    def recording_agent(obs: Any) -> list[list[Any]]:
+        trace = main_agent.decide_with_trace(obs)
+        observation_step = main_agent._obs_get(obs, "step", None)
+        decision = {
+            "agent_index": agent_index,
+            "agent_name": agent_name,
+            "observation_step": observation_step,
+            "recorded_during_run": True,
+            **trace["decision"],
+        }
+        sink.append(decision)
+        return trace["moves"]
+
+    return recording_agent
+
+
+def _find_recorded_decision(
+    recorded_decisions: list[dict[str, Any]],
+    agent_index: int,
+    observation_step: Any,
+) -> dict[str, Any] | None:
+    for decision in recorded_decisions:
+        if (
+            decision.get("agent_index") == agent_index
+            and decision.get("observation_step") == observation_step
+        ):
+            return decision
+    return None
+
+
 def build_agent_decisions(
     step: list[dict[str, Any]],
     agents: list[str],
     action_step: list[dict[str, Any]] | None = None,
+    *,
+    recorded_decisions: list[dict[str, Any]] | None = None,
+    validate_actions: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     decisions = []
     errors = []
+    recorded_decisions = recorded_decisions if recorded_decisions is not None else []
 
     for agent_index, agent_name in enumerate(agents):
         if agent_name != "main.py" or agent_index >= len(step):
@@ -135,19 +174,31 @@ def build_agent_decisions(
         if not observation:
             continue
 
-        trace = main_agent.decide_with_trace(observation)
-        decision = {
-            "agent_index": agent_index,
-            "agent_name": agent_name,
-            **trace["decision"],
-        }
+        observation_step = observation.get("step")
+        decision = _find_recorded_decision(recorded_decisions, agent_index, observation_step)
+        if decision is None:
+            trace = main_agent.decide_with_trace(observation)
+            decision = {
+                "agent_index": agent_index,
+                "agent_name": agent_name,
+                "observation_step": observation_step,
+                "recorded_during_run": False,
+                "action_validation": {
+                    "mode": "strict" if validate_actions else "disabled_for_replay_alignment",
+                    "reason": (
+                        "kaggle replay action records are not reliable raw agent intent "
+                        "for per-observation comparison"
+                    ),
+                },
+                **trace["decision"],
+            }
         decisions.append(decision)
 
         recorded_action = None
         if action_step is not None and agent_index < len(action_step):
             recorded_action = action_step[agent_index].get("action")
 
-        if recorded_action is not None and agent_step.get("status") == "ACTIVE" and not _moves_equal(
+        if validate_actions and recorded_action is not None and agent_step.get("status") == "ACTIVE" and not _moves_equal(
             decision["chosen_moves"],
             recorded_action,
         ):
@@ -177,7 +228,12 @@ def generate_rollout(seed: int, agents: list[str], output_dir: Path) -> dict[str
     run_started_at = datetime.now(timezone.utc).isoformat()
     started = time.perf_counter()
     env = make("orbit_wars", configuration={"seed": seed}, debug=True)
-    steps = as_plain(env.run(agents))
+    recorded_decisions = []
+    run_agents = [
+        make_recording_agent(index, agent, recorded_decisions) if agent == "main.py" else agent
+        for index, agent in enumerate(agents)
+    ]
+    steps = as_plain(env.run(run_agents))
     duration_ms = (time.perf_counter() - started) * 1000
     run_finished_at = datetime.now(timezone.utc).isoformat()
     final_summary = summarize_final_step(steps[-1])
@@ -186,7 +242,12 @@ def generate_rollout(seed: int, agents: list[str], output_dir: Path) -> dict[str
 
     for turn, step in enumerate(steps):
         action_step = steps[turn + 1] if turn + 1 < len(steps) else None
-        agent_decisions, decision_errors = build_agent_decisions(step, agents, action_step)
+        agent_decisions, decision_errors = build_agent_decisions(
+            step,
+            agents,
+            action_step,
+            recorded_decisions=recorded_decisions,
+        )
         errors.extend(decision_errors)
         step_records.append(
             {
@@ -233,8 +294,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--start-seed", type=int, default=1)
     parser.add_argument("--games", type=int, default=20)
-    parser.add_argument("--output-dir", type=Path, default=Path("data/rollouts"))
-    parser.add_argument("--summary", type=Path, default=Path("results/local_rollouts_summary.json"))
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY_PATH)
     return parser.parse_args()
 
 

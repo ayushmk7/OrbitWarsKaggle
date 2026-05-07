@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-05-07T01:18:00.668824+00:00",
+  "agents": [
+    "main.py",
+    "random"
+  ],
+  "start_seed": 1,
+  "games": 1,
+  "results": [
+    {
+      "seed": 1,
+      "output_path": "data/rollouts_v2_smoke/nearest_sniper_v2_traceable_vs_random_seed_0001.jsonl",
+      "num_steps": 146,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 903.7811510497704,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        145,
+        null
+      ],
+      "final_ship_scores": [
+        1088,
+        0
+      ],
+      "winner_agent_index": 0
+    }
+  ]
+}
