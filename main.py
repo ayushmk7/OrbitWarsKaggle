@@ -16,45 +16,117 @@ Key concepts demonstrated:
 """
 
 import math
-from kaggle_environments.envs.orbit_wars.orbit_wars import Planet
+import time
+from collections import namedtuple
+
+try:
+    from kaggle_environments.envs.orbit_wars.orbit_wars import Planet
+except ModuleNotFoundError:
+    Planet = namedtuple("Planet", "id owner x y radius ships production")
+
+
+AGENT_VERSION = "nearest_sniper_v2_traceable"
+
+
+def _obs_get(obs, key, default=None):
+    return obs.get(key, default) if isinstance(obs, dict) else getattr(obs, key, default)
+
+
+def _empty_decision(runtime_ms=0.0, error=None):
+    return {
+        "agent_version": AGENT_VERSION,
+        "runtime_ms": runtime_ms,
+        "error": error,
+        "candidates": [],
+        "chosen_candidate_ids": [],
+        "chosen_moves": [],
+        "chosen_reason": "no legal nearest capturable targets",
+    }
+
+
+def _candidate_id(step, source_id, target_id, ships):
+    return f"{AGENT_VERSION}:t{step}:p{source_id}->p{target_id}:{ships}"
+
+
+def decide_with_trace(obs):
+    started = time.perf_counter()
+    decision = _empty_decision()
+    moves = []
+
+    try:
+        step = _obs_get(obs, "step", 0)
+        player = _obs_get(obs, "player", 0)
+        raw_planets = _obs_get(obs, "planets", [])
+
+        # Parse into named tuples for readable field access:
+        #   Planet(id, owner, x, y, radius, ships, production)
+        #   owner == -1 means neutral, 0-3 are player IDs
+        planets = [Planet(*p) for p in raw_planets]
+        my_planets = [p for p in planets if p.owner == player]
+        targets = [p for p in planets if p.owner != player]
+
+        if not targets:
+            return {"moves": moves, "decision": decision}
+
+        for mine in my_planets:
+            source_candidates = []
+            for target in targets:
+                distance = math.sqrt((mine.x - target.x) ** 2 + (mine.y - target.y) ** 2)
+                ships_needed = target.ships + 1
+                angle = math.atan2(target.y - mine.y, target.x - mine.x)
+                move = [mine.id, angle, ships_needed]
+                affordable = mine.ships >= ships_needed
+                candidate = {
+                    "candidate_id": _candidate_id(step, mine.id, target.id, ships_needed),
+                    "candidate_type": "attack" if target.owner >= 0 else "expand",
+                    "move": move,
+                    "source_planet_id": mine.id,
+                    "target_planet_id": target.id,
+                    "ships": ships_needed,
+                    "angle": angle,
+                    "distance": distance,
+                    "score": -distance,
+                    "score_components": {
+                        "distance_penalty": -distance,
+                        "ships_needed": ships_needed,
+                        "target_ships": target.ships,
+                        "source_ships": mine.ships,
+                        "source_reserve_after": mine.ships - ships_needed,
+                        "target_owner": target.owner,
+                        "target_production": target.production,
+                    },
+                    "legal": affordable,
+                    "rejection_reason": None if affordable else "insufficient_source_ships",
+                    "reason": f"nearest capturable non-owned planet from source {mine.id}",
+                }
+                source_candidates.append(candidate)
+
+            legal_candidates = [candidate for candidate in source_candidates if candidate["legal"]]
+            nearest = min(legal_candidates, key=lambda candidate: candidate["distance"], default=None)
+            for candidate in source_candidates:
+                if nearest is not None and candidate["candidate_id"] == nearest["candidate_id"]:
+                    moves.append(candidate["move"])
+                    decision["chosen_candidate_ids"].append(candidate["candidate_id"])
+                elif candidate["legal"]:
+                    candidate["rejection_reason"] = "not_nearest_target_for_source"
+                decision["candidates"].append(candidate)
+
+        decision["chosen_moves"] = moves
+        if moves:
+            decision["chosen_reason"] = "selected nearest legal capturable target per owned planet"
+    except Exception as exc:  # Kaggle expects the agent wrapper to survive local trace failures.
+        decision["error"] = {
+            "type": type(exc).__name__,
+            "message": str(exc),
+        }
+        moves = []
+        decision["chosen_moves"] = moves
+        decision["chosen_candidate_ids"] = []
+    finally:
+        decision["runtime_ms"] = (time.perf_counter() - started) * 1000
+
+    return {"moves": moves, "decision": decision}
 
 
 def agent(obs):
-    moves = []
-    player = obs.get("player", 0) if isinstance(obs, dict) else obs.player
-    raw_planets = obs.get("planets", []) if isinstance(obs, dict) else obs.planets
-
-    # Parse into named tuples for readable field access:
-    #   Planet(id, owner, x, y, radius, ships, production)
-    #   owner == -1 means neutral, 0-3 are player IDs
-    planets = [Planet(*p) for p in raw_planets]
-    my_planets = [p for p in planets if p.owner == player]
-    targets = [p for p in planets if p.owner != player]
-
-    if not targets:
-        return moves
-
-    for mine in my_planets:
-        # Find the nearest planet we don't own
-        nearest = None
-        min_dist = float("inf")
-        for t in targets:
-            dist = math.sqrt((mine.x - t.x) ** 2 + (mine.y - t.y) ** 2)
-            if dist < min_dist:
-                min_dist = dist
-                nearest = t
-
-        if nearest is None:
-            continue
-
-        # We need to send more ships than the target has to capture it.
-        # Exactly target_ships + 1 guarantees the takeover.
-        ships_needed = nearest.ships + 1
-
-        # Only launch if we can afford it — otherwise keep accumulating
-        if mine.ships >= ships_needed:
-            # atan2(dy, dx) gives the angle from our planet to the target
-            angle = math.atan2(nearest.y - mine.y, nearest.x - mine.x)
-            moves.append([mine.id, angle, ships_needed])
-
-    return moves
+    return decide_with_trace(obs)["moves"]

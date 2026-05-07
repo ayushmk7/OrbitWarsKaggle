@@ -1,11 +1,16 @@
 {
-  "generated_at": "2026-05-06T23:54:27.854875+00:00",
+  "generated_at": "2026-05-07T00:02:45.387008+00:00",
   "agents": [
     "main.py",
     "random"
   ],
   "start_seed": 1,
-  "games": 20,
+  "end_seed": 69,
+  "games": 69,
+  "wins": 61,
+  "losses": 8,
+  "ties_or_other": 0,
+  "win_rate": 0.8840579710144928,
   "results": [
     {
       "seed": 1,
@@ -344,6 +349,839 @@
       ],
       "final_steps": [
         247,
+        null
+      ]
+    },
+    {
+      "seed": 21,
+      "output_path": "data/rollouts/main_vs_random_seed_0021.jsonl",
+      "num_steps": 212,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        211,
+        null
+      ]
+    },
+    {
+      "seed": 22,
+      "output_path": "data/rollouts/main_vs_random_seed_0022.jsonl",
+      "num_steps": 171,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        170,
+        null
+      ]
+    },
+    {
+      "seed": 23,
+      "output_path": "data/rollouts/main_vs_random_seed_0023.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 24,
+      "output_path": "data/rollouts/main_vs_random_seed_0024.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 25,
+      "output_path": "data/rollouts/main_vs_random_seed_0025.jsonl",
+      "num_steps": 283,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        282,
+        null
+      ]
+    },
+    {
+      "seed": 26,
+      "output_path": "data/rollouts/main_vs_random_seed_0026.jsonl",
+      "num_steps": 151,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        150,
+        null
+      ]
+    },
+    {
+      "seed": 27,
+      "output_path": "data/rollouts/main_vs_random_seed_0027.jsonl",
+      "num_steps": 296,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        295,
+        null
+      ]
+    },
+    {
+      "seed": 28,
+      "output_path": "data/rollouts/main_vs_random_seed_0028.jsonl",
+      "num_steps": 117,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        116,
+        null
+      ]
+    },
+    {
+      "seed": 29,
+      "output_path": "data/rollouts/main_vs_random_seed_0029.jsonl",
+      "num_steps": 155,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        154,
+        null
+      ]
+    },
+    {
+      "seed": 30,
+      "output_path": "data/rollouts/main_vs_random_seed_0030.jsonl",
+      "num_steps": 126,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        125,
+        null
+      ]
+    },
+    {
+      "seed": 31,
+      "output_path": "data/rollouts/main_vs_random_seed_0031.jsonl",
+      "num_steps": 155,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        154,
+        null
+      ]
+    },
+    {
+      "seed": 32,
+      "output_path": "data/rollouts/main_vs_random_seed_0032.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 33,
+      "output_path": "data/rollouts/main_vs_random_seed_0033.jsonl",
+      "num_steps": 177,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        176,
+        null
+      ]
+    },
+    {
+      "seed": 34,
+      "output_path": "data/rollouts/main_vs_random_seed_0034.jsonl",
+      "num_steps": 182,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        181,
+        null
+      ]
+    },
+    {
+      "seed": 35,
+      "output_path": "data/rollouts/main_vs_random_seed_0035.jsonl",
+      "num_steps": 313,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        312,
+        null
+      ]
+    },
+    {
+      "seed": 36,
+      "output_path": "data/rollouts/main_vs_random_seed_0036.jsonl",
+      "num_steps": 164,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        163,
+        null
+      ]
+    },
+    {
+      "seed": 37,
+      "output_path": "data/rollouts/main_vs_random_seed_0037.jsonl",
+      "num_steps": 173,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        172,
+        null
+      ]
+    },
+    {
+      "seed": 38,
+      "output_path": "data/rollouts/main_vs_random_seed_0038.jsonl",
+      "num_steps": 134,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        133,
+        null
+      ]
+    },
+    {
+      "seed": 39,
+      "output_path": "data/rollouts/main_vs_random_seed_0039.jsonl",
+      "num_steps": 277,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        276,
+        null
+      ]
+    },
+    {
+      "seed": 40,
+      "output_path": "data/rollouts/main_vs_random_seed_0040.jsonl",
+      "num_steps": 185,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        184,
+        null
+      ]
+    },
+    {
+      "seed": 41,
+      "output_path": "data/rollouts/main_vs_random_seed_0041.jsonl",
+      "num_steps": 160,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        159,
+        null
+      ]
+    },
+    {
+      "seed": 42,
+      "output_path": "data/rollouts/main_vs_random_seed_0042.jsonl",
+      "num_steps": 183,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        182,
+        null
+      ]
+    },
+    {
+      "seed": 43,
+      "output_path": "data/rollouts/main_vs_random_seed_0043.jsonl",
+      "num_steps": 173,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        172,
+        null
+      ]
+    },
+    {
+      "seed": 44,
+      "output_path": "data/rollouts/main_vs_random_seed_0044.jsonl",
+      "num_steps": 463,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        462,
+        null
+      ]
+    },
+    {
+      "seed": 45,
+      "output_path": "data/rollouts/main_vs_random_seed_0045.jsonl",
+      "num_steps": 236,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        235,
+        null
+      ]
+    },
+    {
+      "seed": 46,
+      "output_path": "data/rollouts/main_vs_random_seed_0046.jsonl",
+      "num_steps": 167,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        166,
+        null
+      ]
+    },
+    {
+      "seed": 47,
+      "output_path": "data/rollouts/main_vs_random_seed_0047.jsonl",
+      "num_steps": 152,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        151,
+        null
+      ]
+    },
+    {
+      "seed": 48,
+      "output_path": "data/rollouts/main_vs_random_seed_0048.jsonl",
+      "num_steps": 133,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        132,
+        null
+      ]
+    },
+    {
+      "seed": 49,
+      "output_path": "data/rollouts/main_vs_random_seed_0049.jsonl",
+      "num_steps": 165,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        164,
+        null
+      ]
+    },
+    {
+      "seed": 50,
+      "output_path": "data/rollouts/main_vs_random_seed_0050.jsonl",
+      "num_steps": 198,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        197,
+        null
+      ]
+    },
+    {
+      "seed": 51,
+      "output_path": "data/rollouts/main_vs_random_seed_0051.jsonl",
+      "num_steps": 191,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        190,
+        null
+      ]
+    },
+    {
+      "seed": 52,
+      "output_path": "data/rollouts/main_vs_random_seed_0052.jsonl",
+      "num_steps": 313,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        312,
+        null
+      ]
+    },
+    {
+      "seed": 53,
+      "output_path": "data/rollouts/main_vs_random_seed_0053.jsonl",
+      "num_steps": 394,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        393,
+        null
+      ]
+    },
+    {
+      "seed": 54,
+      "output_path": "data/rollouts/main_vs_random_seed_0054.jsonl",
+      "num_steps": 86,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        85,
+        null
+      ]
+    },
+    {
+      "seed": 55,
+      "output_path": "data/rollouts/main_vs_random_seed_0055.jsonl",
+      "num_steps": 103,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        102,
+        null
+      ]
+    },
+    {
+      "seed": 56,
+      "output_path": "data/rollouts/main_vs_random_seed_0056.jsonl",
+      "num_steps": 500,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        499,
+        null
+      ]
+    },
+    {
+      "seed": 57,
+      "output_path": "data/rollouts/main_vs_random_seed_0057.jsonl",
+      "num_steps": 164,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        163,
+        null
+      ]
+    },
+    {
+      "seed": 58,
+      "output_path": "data/rollouts/main_vs_random_seed_0058.jsonl",
+      "num_steps": 229,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        228,
+        null
+      ]
+    },
+    {
+      "seed": 59,
+      "output_path": "data/rollouts/main_vs_random_seed_0059.jsonl",
+      "num_steps": 180,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        179,
+        null
+      ]
+    },
+    {
+      "seed": 60,
+      "output_path": "data/rollouts/main_vs_random_seed_0060.jsonl",
+      "num_steps": 238,
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        237,
+        null
+      ]
+    },
+    {
+      "seed": 61,
+      "output_path": "data/rollouts/main_vs_random_seed_0061.jsonl",
+      "num_steps": 213,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        212,
+        null
+      ]
+    },
+    {
+      "seed": 62,
+      "output_path": "data/rollouts/main_vs_random_seed_0062.jsonl",
+      "num_steps": 178,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        177,
+        null
+      ]
+    },
+    {
+      "seed": 63,
+      "output_path": "data/rollouts/main_vs_random_seed_0063.jsonl",
+      "num_steps": 412,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        411,
+        null
+      ]
+    },
+    {
+      "seed": 64,
+      "output_path": "data/rollouts/main_vs_random_seed_0064.jsonl",
+      "num_steps": 207,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        206,
+        null
+      ]
+    },
+    {
+      "seed": 65,
+      "output_path": "data/rollouts/main_vs_random_seed_0065.jsonl",
+      "num_steps": 118,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        117,
+        null
+      ]
+    },
+    {
+      "seed": 66,
+      "output_path": "data/rollouts/main_vs_random_seed_0066.jsonl",
+      "num_steps": 251,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        250,
+        null
+      ]
+    },
+    {
+      "seed": 67,
+      "output_path": "data/rollouts/main_vs_random_seed_0067.jsonl",
+      "num_steps": 111,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        110,
+        null
+      ]
+    },
+    {
+      "seed": 68,
+      "output_path": "data/rollouts/main_vs_random_seed_0068.jsonl",
+      "num_steps": 161,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        160,
+        null
+      ]
+    },
+    {
+      "seed": 69,
+      "output_path": "data/rollouts/main_vs_random_seed_0069.jsonl",
+      "num_steps": 130,
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        129,
         null
       ]
     }
