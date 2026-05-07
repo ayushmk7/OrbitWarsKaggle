@@ -1,16 +1,17 @@
 """
-Orbit Wars - Nearest Planet Sniper Agent
+Orbit Wars - Production-Scored Expansion Agent
 
-A simple agent that captures the nearest unowned planet when it has
-enough ships to guarantee the takeover.
+A traceable rule-based agent that scores unowned planets by production value,
+travel time, capture cost, source reserve, and sun safety.
 
 Strategy:
-  For each planet we own, score planets we don't own by production value,
-  travel time, capture cost, and source reserve after launch.
+  For each planet we own, evaluate planets we don't own and choose the
+  highest-scoring legal target.
 
 Key concepts demonstrated:
   - Parsing the observation (planets, player ID)
-  - Computing angles with atan2 for fleet direction
+  - Computing angles for fleet direction
+  - Rejecting sun-blocked launches before selection
   - Sending moves as [from_planet_id, angle, num_ships]
 """
 
