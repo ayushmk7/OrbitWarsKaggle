@@ -73,7 +73,7 @@ def test_make_recording_agent_records_exact_decision_used_for_action():
     assert recorded["agent_name"] == "main.py"
     assert recorded["observation_step"] == 1
     assert recorded["chosen_moves"] == moves
-    assert recorded["chosen_reason"] == "selected nearest legal capturable target per owned planet"
+    assert recorded["chosen_reason"] == "selected highest-scoring legal production target per owned planet"
 
 
 def test_build_agent_decisions_uses_recorded_decisions_without_recomputing(monkeypatch):
@@ -170,7 +170,9 @@ def test_build_agent_decisions_records_main_trace_without_action_mismatch_by_def
     assert decision["agent_name"] == "main.py"
     assert decision["agent_version"] == main.AGENT_VERSION
     assert decision["chosen_moves"] == [[1, 0.9272952180016122, 6]]
-    assert decision["candidates"][0]["score"] == -5.0
+    assert decision["candidates"][0]["score"] == 983
+    assert decision["candidates"][0]["travel_turns"] == 3
+    assert decision["candidates"][0]["score_components"]["production_value"] == 992
     assert errors == []
     assert decision["action_validation"]["mode"] == "disabled_for_replay_alignment"
 

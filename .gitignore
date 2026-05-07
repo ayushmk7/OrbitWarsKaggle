@@ -1,9 +1,3 @@
 .venv/
 __pycache__/
 *.py[cod]
-
-data/
-replays/
-logs/
-orbit-wars-data/
-submission.tar.gz
