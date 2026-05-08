@@ -56,3 +56,12 @@ def predict_position(r, theta0, omega, t, cx=50, cy=50):
 
 def is_orbiting(planet):
     return (math.sqrt((planet.x - 50)**2 + (planet.y-50)**2) + planet.radius < 50)
+
+
+def required_reserve(step, planet):
+    if step < 50:
+        return max(3, planet.production)
+    elif step < 150:
+        return max(5, planet.production)
+    else:
+        return 5

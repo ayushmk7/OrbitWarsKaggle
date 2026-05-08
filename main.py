@@ -66,6 +66,8 @@ def decide_with_trace(obs):
         planets = [Planet(*p) for p in raw_planets]
         my_planets = [p for p in planets if p.owner == player]
         targets = [p for p in planets if p.owner != player]
+        
+        source_budget = { p.id: max(0, p.ships - required_reserve(step, p)) for p in my_planets }
 
         # case - no enemies
         if not targets:
@@ -77,7 +79,6 @@ def decide_with_trace(obs):
                 
                 ships_needed = target.ships + 1
                 
-                # NEW CODE START
                 LIMIT = 15 # change later if necessary
                 TIME_THRESHOLD = 2.0 # change later if necessary
                 
@@ -118,7 +119,6 @@ def decide_with_trace(obs):
                     distance = geometry.distance_xy(mine.x, mine.y, target.x, target.y)
                     angle = geometry.angle_to_xy(mine.x, mine.y, target.x, target.y)
                     travel_turns = geometry.turns_to_reach(distance, ships_needed)
-                # NEW CODE END
                 
                 move = [mine.id, angle, ships_needed]
                 remaining_after_arrival = max(0, 500 - step - travel_turns)
@@ -175,18 +175,22 @@ def decide_with_trace(obs):
                 source_candidates.append(candidate)
 
             legal_candidates = [candidate for candidate in source_candidates if candidate["legal"]]
-            best = max(legal_candidates, key=lambda candidate: candidate["score"], default=None)
-            for candidate in source_candidates:
-                if best is not None and candidate["candidate_id"] == best["candidate_id"]:
+            
+            legal_candidates.sort(key=lambda c: c["score"], reverse=True)
+            
+            for candidate in legal_candidates:
+                src = candidate["source_planet_id"]
+                cost = candidate["ships"]
+
+                if source_budget[src] >= cost:
                     moves.append(candidate["move"])
                     decision["chosen_candidate_ids"].append(candidate["candidate_id"])
-                elif candidate["legal"]:
-                    candidate["rejection_reason"] = "not_highest_scoring_target_for_source"
-                decision["candidates"].append(candidate)
-
+                    source_budget[src] -= cost
+            
         decision["chosen_moves"] = moves
         if moves:
             decision["chosen_reason"] = "selected highest-scoring legal production target per owned planet"
+
     except Exception as exc:  # Kaggle expects the agent wrapper to survive local trace failures.
         decision["error"] = {
             "type": type(exc).__name__,
