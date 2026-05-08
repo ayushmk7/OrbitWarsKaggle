@@ -47,3 +47,12 @@ def shot_hits_sun(source, target, sun_x=50.0, sun_y=50.0, sun_radius=10.0):
         sun_y,
         sun_radius,
     )
+
+def predict_position(r, theta0, omega, t, cx=50, cy=50):
+    theta = theta0 + omega * t
+    x = cx + r * math.cos(theta)
+    y = cy + r * math.sin(theta)
+    return x, y
+
+def is_orbiting(planet):
+    return (math.sqrt((planet.x - 50)**2 + (planet.y-50)**2) + planet.radius < 50)

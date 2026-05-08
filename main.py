@@ -17,7 +17,6 @@ Key concepts demonstrated:
 
 import time
 from collections import namedtuple
-
 import geometry
 
 try:
@@ -28,11 +27,12 @@ except ModuleNotFoundError:
 
 AGENT_VERSION = "nearest_sniper_v2_traceable"
 
-
+# obs is dict -> returns value of attribute key (or default, if NONE)
+# obs is object -> returns value of attribute element (or default, if NONE)
 def _obs_get(obs, key, default=None):
     return obs.get(key, default) if isinstance(obs, dict) else getattr(obs, key, default)
 
-
+# used if no decision made
 def _empty_decision(runtime_ms=0.0, error=None):
     return {
         "agent_version": AGENT_VERSION,
@@ -40,7 +40,7 @@ def _empty_decision(runtime_ms=0.0, error=None):
         "error": error,
         "candidates": [],
         "chosen_candidate_ids": [],
-        "chosen_moves": [],
+        "chosen_moves": [], # kaggle return value
         "chosen_reason": "no legal production-scored targets",
     }
 
@@ -55,9 +55,10 @@ def decide_with_trace(obs):
     moves = []
 
     try:
-        step = _obs_get(obs, "step", 0)
+        step = 0
         player = _obs_get(obs, "player", 0)
         raw_planets = _obs_get(obs, "planets", [])
+        angular_velocity = _obs_get(obs, "angular_velocity", 0)
 
         # Parse into named tuples for readable field access:
         #   Planet(id, owner, x, y, radius, ships, production)
@@ -66,20 +67,63 @@ def decide_with_trace(obs):
         my_planets = [p for p in planets if p.owner == player]
         targets = [p for p in planets if p.owner != player]
 
+        # case - no enemies
         if not targets:
             return {"moves": moves, "decision": decision}
 
         for mine in my_planets:
             source_candidates = []
             for target in targets:
-                distance = geometry.distance_xy(mine.x, mine.y, target.x, target.y)
+                
                 ships_needed = target.ships + 1
-                angle = geometry.angle_to_xy(mine.x, mine.y, target.x, target.y)
+                
+                # NEW CODE START
+                LIMIT = 15 # change later if necessary
+                TIME_THRESHOLD = 2.0 # change later if necessary
+                
+                best_sample = None
+                best_error = float("inf")
+                
+                if geometry.is_orbiting(target):
+                    for t in range (1, LIMIT + 1):
+                        theta = geometry.angle_to_xy(target.x, target.y, 50, 50)
+
+                        pred_x, pred_y = geometry.predict_position(target.radius, theta, angular_velocity, t)
+
+                        distance = geometry.distance_xy(mine.x, mine.y, pred_x, pred_y)
+                        travel_turns = geometry.turns_to_reach(distance, ships_needed)
+                        timing_error = abs(travel_turns - t)
+                        
+                        if geometry.shot_hits_sun((mine.x, mine.y), (pred_x, pred_y)):
+                            continue
+                        
+                        if timing_error < best_error:
+                            best_error = timing_error
+                            best_sample = {
+                                "distance": distance,
+                                "travel_turns": travel_turns,
+                                "ships_needed": ships_needed,
+                                "angle": geometry.angle_to_xy(mine.x, mine.y, pred_x, pred_y),
+                            }
+                        
+                    if best_sample is None or best_error > TIME_THRESHOLD:
+                        continue
+
+                    distance = best_sample["distance"]
+                    travel_turns = best_sample["travel_turns"]
+                    ships_needed = best_sample["ships_needed"]
+                    angle = best_sample["angle"]
+                    
+                else:
+                    distance = geometry.distance_xy(mine.x, mine.y, target.x, target.y)
+                    angle = geometry.angle_to_xy(mine.x, mine.y, target.x, target.y)
+                    travel_turns = geometry.turns_to_reach(distance, ships_needed)
+                # NEW CODE END
+                
                 move = [mine.id, angle, ships_needed]
-                travel_turns = geometry.turns_to_reach(distance, ships_needed)
                 remaining_after_arrival = max(0, 500 - step - travel_turns)
                 source_reserve_after = mine.ships - ships_needed
-                desired_reserve = max(1, mine.production)
+                desired_reserve = mine.production
                 reserve_penalty = max(0, desired_reserve - source_reserve_after)
                 production_value = target.production * remaining_after_arrival
                 ship_cost = ships_needed
