@@ -1,0 +1,3023 @@
+{
+  "generated_at": "2026-05-08T20:35:29.405761+00:00",
+  "agent_version": "nearest_sniper_v2_traceable",
+  "agents": [
+    "main.py",
+    "random"
+  ],
+  "opponents": [
+    "random"
+  ],
+  "start_seed": 1,
+  "games": 100,
+  "wins": 99,
+  "losses": 1,
+  "ties": 0,
+  "win_rate": 0.99,
+  "average_reward": 0.98,
+  "average_final_ship_score": 2993.04,
+  "average_duration_ms": 30763.090675969142,
+  "error_count": 0,
+  "results": [
+    {
+      "seed": 1,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0001.jsonl",
+      "num_steps": 87,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 8429.808301036246,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        86,
+        null
+      ],
+      "final_ship_scores": [
+        1146,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 2,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0002.jsonl",
+      "num_steps": 142,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 18446.06259302236,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        141,
+        null
+      ],
+      "final_ship_scores": [
+        2741,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 3,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0003.jsonl",
+      "num_steps": 123,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 17865.80775200855,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        122,
+        null
+      ],
+      "final_ship_scores": [
+        2195,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 4,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0004.jsonl",
+      "num_steps": 254,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 39078.772012959234,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        253,
+        null
+      ],
+      "final_ship_scores": [
+        6334,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 5,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0005.jsonl",
+      "num_steps": 164,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 26899.478342966177,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        163,
+        null
+      ],
+      "final_ship_scores": [
+        4597,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 6,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0006.jsonl",
+      "num_steps": 166,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 42090.06397903431,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        165,
+        null
+      ],
+      "final_ship_scores": [
+        4655,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 7,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0007.jsonl",
+      "num_steps": 182,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 23846.476746024564,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        181,
+        null
+      ],
+      "final_ship_scores": [
+        3090,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 8,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0008.jsonl",
+      "num_steps": 284,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 50908.31143804826,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        283,
+        null
+      ],
+      "final_ship_scores": [
+        2111,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 9,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0009.jsonl",
+      "num_steps": 135,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 15467.821734957397,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        134,
+        null
+      ],
+      "final_ship_scores": [
+        2869,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 10,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0010.jsonl",
+      "num_steps": 132,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 23185.03315804992,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        131,
+        null
+      ],
+      "final_ship_scores": [
+        1826,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 11,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0011.jsonl",
+      "num_steps": 95,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 14152.990764938295,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        94,
+        null
+      ],
+      "final_ship_scores": [
+        1329,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 12,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0012.jsonl",
+      "num_steps": 275,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 60563.48561798222,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        274,
+        null
+      ],
+      "final_ship_scores": [
+        2884,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 13,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0013.jsonl",
+      "num_steps": 124,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 18599.916349048726,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        123,
+        null
+      ],
+      "final_ship_scores": [
+        2085,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 14,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0014.jsonl",
+      "num_steps": 144,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 36548.90581197105,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        143,
+        null
+      ],
+      "final_ship_scores": [
+        6367,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 15,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0015.jsonl",
+      "num_steps": 235,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 22983.94961003214,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        234,
+        null
+      ],
+      "final_ship_scores": [
+        823,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 16,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0016.jsonl",
+      "num_steps": 212,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 15475.421407958493,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        211,
+        null
+      ],
+      "final_ship_scores": [
+        1819,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 17,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0017.jsonl",
+      "num_steps": 148,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 18115.973875042982,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        147,
+        null
+      ],
+      "final_ship_scores": [
+        3292,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 18,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0018.jsonl",
+      "num_steps": 379,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 35204.15345695801,
+      "errors": [],
+      "rewards": [
+        -1,
+        1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        378,
+        null
+      ],
+      "final_ship_scores": [
+        0,
+        2245
+      ],
+      "winner_agent_index": 1
+    },
+    {
+      "seed": 19,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0019.jsonl",
+      "num_steps": 173,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 32434.819065965712,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        172,
+        null
+      ],
+      "final_ship_scores": [
+        2856,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 20,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0020.jsonl",
+      "num_steps": 135,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 24080.643107998185,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        134,
+        null
+      ],
+      "final_ship_scores": [
+        1672,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 21,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0021.jsonl",
+      "num_steps": 175,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 32300.29113101773,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        174,
+        null
+      ],
+      "final_ship_scores": [
+        3125,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 22,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0022.jsonl",
+      "num_steps": 150,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 14948.428114992566,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        149,
+        null
+      ],
+      "final_ship_scores": [
+        2183,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 23,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0023.jsonl",
+      "num_steps": 187,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 55989.32320892345,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        186,
+        null
+      ],
+      "final_ship_scores": [
+        5078,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 24,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0024.jsonl",
+      "num_steps": 170,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 35248.60792898107,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        169,
+        null
+      ],
+      "final_ship_scores": [
+        3478,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 25,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0025.jsonl",
+      "num_steps": 158,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 20458.525368012488,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        157,
+        null
+      ],
+      "final_ship_scores": [
+        2570,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 26,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0026.jsonl",
+      "num_steps": 207,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 15341.471881023608,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        206,
+        null
+      ],
+      "final_ship_scores": [
+        2293,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 27,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0027.jsonl",
+      "num_steps": 178,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 34089.68501200434,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        177,
+        null
+      ],
+      "final_ship_scores": [
+        3607,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 28,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0028.jsonl",
+      "num_steps": 61,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 5166.9024240691215,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        60,
+        null
+      ],
+      "final_ship_scores": [
+        651,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 29,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0029.jsonl",
+      "num_steps": 105,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 12369.537023943849,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        104,
+        null
+      ],
+      "final_ship_scores": [
+        3403,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 30,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0030.jsonl",
+      "num_steps": 142,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 26137.299943948165,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        141,
+        null
+      ],
+      "final_ship_scores": [
+        2916,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 31,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0031.jsonl",
+      "num_steps": 171,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 26053.029943956062,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        170,
+        null
+      ],
+      "final_ship_scores": [
+        1553,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 32,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0032.jsonl",
+      "num_steps": 125,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 26331.088458071463,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        124,
+        null
+      ],
+      "final_ship_scores": [
+        2958,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 33,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0033.jsonl",
+      "num_steps": 238,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 60747.40498093888,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        237,
+        null
+      ],
+      "final_ship_scores": [
+        4969,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 34,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0034.jsonl",
+      "num_steps": 209,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 43178.719233023,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        208,
+        null
+      ],
+      "final_ship_scores": [
+        2313,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 35,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0035.jsonl",
+      "num_steps": 223,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 29625.671939109452,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        222,
+        null
+      ],
+      "final_ship_scores": [
+        4210,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 36,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0036.jsonl",
+      "num_steps": 239,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 21103.842567885295,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        238,
+        null
+      ],
+      "final_ship_scores": [
+        3907,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 37,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0037.jsonl",
+      "num_steps": 235,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 40038.45359897241,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        234,
+        null
+      ],
+      "final_ship_scores": [
+        3034,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 38,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0038.jsonl",
+      "num_steps": 260,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 33013.17269098945,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        259,
+        null
+      ],
+      "final_ship_scores": [
+        2876,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 39,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0039.jsonl",
+      "num_steps": 293,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 62718.347924994305,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        292,
+        null
+      ],
+      "final_ship_scores": [
+        5072,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 40,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0040.jsonl",
+      "num_steps": 199,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 30975.72998306714,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        198,
+        null
+      ],
+      "final_ship_scores": [
+        3549,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 41,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0041.jsonl",
+      "num_steps": 158,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 22453.756286064163,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        157,
+        null
+      ],
+      "final_ship_scores": [
+        3692,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 42,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0042.jsonl",
+      "num_steps": 173,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 47413.41551300138,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        172,
+        null
+      ],
+      "final_ship_scores": [
+        4121,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 43,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0043.jsonl",
+      "num_steps": 222,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 36282.536525977775,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        221,
+        null
+      ],
+      "final_ship_scores": [
+        2211,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 44,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0044.jsonl",
+      "num_steps": 118,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 14213.822026038542,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        117,
+        null
+      ],
+      "final_ship_scores": [
+        3728,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 45,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0045.jsonl",
+      "num_steps": 188,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 27362.842831062153,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        187,
+        null
+      ],
+      "final_ship_scores": [
+        3829,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 46,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0046.jsonl",
+      "num_steps": 226,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 37577.08520197775,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        225,
+        null
+      ],
+      "final_ship_scores": [
+        2772,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 47,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0047.jsonl",
+      "num_steps": 212,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 29020.550281973556,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        211,
+        null
+      ],
+      "final_ship_scores": [
+        4305,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 48,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0048.jsonl",
+      "num_steps": 211,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 22719.762778957374,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        210,
+        null
+      ],
+      "final_ship_scores": [
+        998,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 49,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0049.jsonl",
+      "num_steps": 153,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 40626.021117088385,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        152,
+        null
+      ],
+      "final_ship_scores": [
+        6083,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 50,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0050.jsonl",
+      "num_steps": 126,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 19815.111962961964,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        125,
+        null
+      ],
+      "final_ship_scores": [
+        3867,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 51,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0051.jsonl",
+      "num_steps": 211,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 21143.04681995418,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        210,
+        null
+      ],
+      "final_ship_scores": [
+        3666,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 52,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0052.jsonl",
+      "num_steps": 146,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 19794.611939927563,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        145,
+        null
+      ],
+      "final_ship_scores": [
+        3262,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 53,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0053.jsonl",
+      "num_steps": 81,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 12075.608608080074,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        80,
+        null
+      ],
+      "final_ship_scores": [
+        665,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 54,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0054.jsonl",
+      "num_steps": 129,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 18065.082265995443,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        128,
+        null
+      ],
+      "final_ship_scores": [
+        2173,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 55,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0055.jsonl",
+      "num_steps": 202,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 31115.976457949728,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        201,
+        null
+      ],
+      "final_ship_scores": [
+        4314,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 56,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0056.jsonl",
+      "num_steps": 372,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 84458.6769520538,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        371,
+        null
+      ],
+      "final_ship_scores": [
+        4678,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 57,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0057.jsonl",
+      "num_steps": 162,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 26050.00991700217,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        161,
+        null
+      ],
+      "final_ship_scores": [
+        5407,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 58,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0058.jsonl",
+      "num_steps": 186,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 28418.331180000678,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        185,
+        null
+      ],
+      "final_ship_scores": [
+        1354,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 59,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0059.jsonl",
+      "num_steps": 200,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 61836.604890064336,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        199,
+        null
+      ],
+      "final_ship_scores": [
+        4014,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 60,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0060.jsonl",
+      "num_steps": 117,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 17609.373943996616,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        116,
+        null
+      ],
+      "final_ship_scores": [
+        1375,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 61,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0061.jsonl",
+      "num_steps": 111,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 25018.54659395758,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        110,
+        null
+      ],
+      "final_ship_scores": [
+        1822,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 62,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0062.jsonl",
+      "num_steps": 180,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 41254.68215206638,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        179,
+        null
+      ],
+      "final_ship_scores": [
+        5514,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 63,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0063.jsonl",
+      "num_steps": 120,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 13509.178411914036,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        119,
+        null
+      ],
+      "final_ship_scores": [
+        3408,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 64,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0064.jsonl",
+      "num_steps": 269,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 54478.01794297993,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        268,
+        null
+      ],
+      "final_ship_scores": [
+        2411,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 65,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0065.jsonl",
+      "num_steps": 230,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 28965.27550299652,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        229,
+        null
+      ],
+      "final_ship_scores": [
+        3581,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 66,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0066.jsonl",
+      "num_steps": 128,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 15733.138954034075,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        127,
+        null
+      ],
+      "final_ship_scores": [
+        2416,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 67,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0067.jsonl",
+      "num_steps": 147,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 22514.066235045902,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        146,
+        null
+      ],
+      "final_ship_scores": [
+        4126,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 68,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0068.jsonl",
+      "num_steps": 142,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 11918.123267008923,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        141,
+        null
+      ],
+      "final_ship_scores": [
+        2191,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 69,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0069.jsonl",
+      "num_steps": 182,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 38680.1246709656,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        181,
+        null
+      ],
+      "final_ship_scores": [
+        3123,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 70,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0070.jsonl",
+      "num_steps": 442,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 29324.08748299349,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        441,
+        null
+      ],
+      "final_ship_scores": [
+        2243,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 71,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0071.jsonl",
+      "num_steps": 226,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 31900.21349291783,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        225,
+        null
+      ],
+      "final_ship_scores": [
+        3491,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 72,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0072.jsonl",
+      "num_steps": 257,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 35021.678460994735,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        256,
+        null
+      ],
+      "final_ship_scores": [
+        2413,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 73,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0073.jsonl",
+      "num_steps": 129,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 13906.716170022264,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        128,
+        null
+      ],
+      "final_ship_scores": [
+        3314,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 74,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0074.jsonl",
+      "num_steps": 184,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 22779.325845069252,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        183,
+        null
+      ],
+      "final_ship_scores": [
+        2494,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 75,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0075.jsonl",
+      "num_steps": 287,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 27256.197416922078,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        286,
+        null
+      ],
+      "final_ship_scores": [
+        1411,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 76,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0076.jsonl",
+      "num_steps": 129,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 10900.151306996122,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        128,
+        null
+      ],
+      "final_ship_scores": [
+        1855,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 77,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0077.jsonl",
+      "num_steps": 275,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 71484.20930595603,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        274,
+        null
+      ],
+      "final_ship_scores": [
+        3343,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 78,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0078.jsonl",
+      "num_steps": 271,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 58318.40784300584,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        270,
+        null
+      ],
+      "final_ship_scores": [
+        3185,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 79,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0079.jsonl",
+      "num_steps": 170,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 37332.657451042905,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        169,
+        null
+      ],
+      "final_ship_scores": [
+        1505,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 80,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0080.jsonl",
+      "num_steps": 253,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 27395.42207599152,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        252,
+        null
+      ],
+      "final_ship_scores": [
+        1375,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 81,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0081.jsonl",
+      "num_steps": 178,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 21328.643933986314,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        177,
+        null
+      ],
+      "final_ship_scores": [
+        2407,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 82,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0082.jsonl",
+      "num_steps": 209,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 54367.71521798801,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        208,
+        null
+      ],
+      "final_ship_scores": [
+        3201,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 83,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0083.jsonl",
+      "num_steps": 183,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 50597.72109403275,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        182,
+        null
+      ],
+      "final_ship_scores": [
+        2794,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 84,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0084.jsonl",
+      "num_steps": 148,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 47227.73927403614,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        147,
+        null
+      ],
+      "final_ship_scores": [
+        4594,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 85,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0085.jsonl",
+      "num_steps": 154,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 34884.70979197882,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        153,
+        null
+      ],
+      "final_ship_scores": [
+        2902,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 86,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0086.jsonl",
+      "num_steps": 164,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 51969.258507946506,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        163,
+        null
+      ],
+      "final_ship_scores": [
+        3050,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 87,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0087.jsonl",
+      "num_steps": 207,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 39762.15401198715,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        206,
+        null
+      ],
+      "final_ship_scores": [
+        4020,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 88,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0088.jsonl",
+      "num_steps": 72,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 9704.38919402659,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        71,
+        null
+      ],
+      "final_ship_scores": [
+        591,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 89,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0089.jsonl",
+      "num_steps": 355,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 73057.94090195559,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        354,
+        null
+      ],
+      "final_ship_scores": [
+        3495,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 90,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0090.jsonl",
+      "num_steps": 111,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 21228.4436118789,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        110,
+        null
+      ],
+      "final_ship_scores": [
+        2280,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 91,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0091.jsonl",
+      "num_steps": 147,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 40257.5025591068,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        146,
+        null
+      ],
+      "final_ship_scores": [
+        3007,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 92,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0092.jsonl",
+      "num_steps": 158,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 31345.610440010205,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        157,
+        null
+      ],
+      "final_ship_scores": [
+        4015,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 93,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0093.jsonl",
+      "num_steps": 144,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 18347.1638741903,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        143,
+        null
+      ],
+      "final_ship_scores": [
+        3823,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 94,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0094.jsonl",
+      "num_steps": 86,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 15545.99813488312,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        85,
+        null
+      ],
+      "final_ship_scores": [
+        1354,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 95,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0095.jsonl",
+      "num_steps": 176,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 34454.40606283955,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        175,
+        null
+      ],
+      "final_ship_scores": [
+        3868,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 96,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0096.jsonl",
+      "num_steps": 192,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 21279.553776141256,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        191,
+        null
+      ],
+      "final_ship_scores": [
+        2633,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 97,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0097.jsonl",
+      "num_steps": 82,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 11413.622159976512,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        81,
+        null
+      ],
+      "final_ship_scores": [
+        662,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 98,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0098.jsonl",
+      "num_steps": 132,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 26167.636543978006,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        131,
+        null
+      ],
+      "final_ship_scores": [
+        1907,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 99,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0099.jsonl",
+      "num_steps": 141,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 25789.805745938793,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        140,
+        null
+      ],
+      "final_ship_scores": [
+        3015,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 100,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable/nearest_sniper_v2_traceable_vs_random_seed_0100.jsonl",
+      "num_steps": 150,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 41623.176193097606,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        149,
+        null
+      ],
+      "final_ship_scores": [
+        5515,
+        0
+      ],
+      "winner_agent_index": 0
+    }
+  ]
+}

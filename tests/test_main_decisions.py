@@ -345,3 +345,192 @@ def test_budgeting_preserves_sun_blocked_and_insufficient_ship_reasons():
 
     assert candidates_by_target[2]["rejection_reason"] == "sun_blocked"
     assert candidates_by_target[3]["rejection_reason"] == "insufficient_source_ships"
+
+
+def test_high_production_threatened_planet_gets_reinforced():
+    obs = {
+        "player": 0,
+        "step": 100,
+        "planets": [
+            [1, 0, 8.0, 10.0, 1.0, 60, 3],
+            [2, 0, 10.0, 10.0, 1.0, 5, 5],
+            [3, -1, 8.0, 15.0, 1.0, 1, 1],
+        ],
+        "fleets": [
+            [10, 1, 30.0, 10.0, math.pi, 4, 80],
+        ],
+    }
+
+    result = main.decide_with_trace(obs)
+    reinforce = [
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_type"] == "reinforce" and candidate["legal"]
+    ]
+
+    assert reinforce
+    assert result["moves"][0][0] == 1
+    assert result["moves"][0][1] == 0.0
+    assert result["moves"][0][2] > 0
+    assert reinforce[0]["target_planet_id"] == 2
+    assert reinforce[0]["threat_fleet_id"] == 10
+
+
+def test_doomed_low_value_planet_is_not_over_defended():
+    obs = {
+        "player": 0,
+        "step": 100,
+        "planets": [
+            [1, 0, 8.0, 10.0, 1.0, 20, 4],
+            [2, 0, 10.0, 10.0, 1.0, 1, 1],
+        ],
+        "fleets": [
+            [10, 1, 13.0, 10.0, math.pi, 4, 100],
+        ],
+    }
+
+    result = main.decide_with_trace(obs)
+    selected_reinforcements = [
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_type"] == "reinforce"
+        and candidate["candidate_id"] in result["decision"]["chosen_candidate_ids"]
+    ]
+
+    assert selected_reinforcements == []
+    assert all(move[0] != 1 or move[2] < 50 for move in result["moves"])
+
+
+def test_reinforcement_does_not_drain_only_safe_high_value_planet():
+    obs = {
+        "player": 0,
+        "step": 20,
+        "planets": [
+            [1, 0, 8.0, 10.0, 1.0, 20, 12],
+            [2, 0, 10.0, 10.0, 1.0, 1, 2],
+        ],
+        "fleets": [
+            [10, 1, 25.0, 10.0, math.pi, 4, 45],
+        ],
+    }
+
+    result = main.decide_with_trace(obs)
+    rejected = [
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_type"] == "reinforce"
+    ]
+
+    assert rejected
+    assert all(candidate["rejection_reason"] == "reserve_too_low" for candidate in rejected)
+    assert result["moves"] == []
+
+
+def test_weakened_enemy_planet_is_attacked_over_lower_value_neutral():
+    obs = {
+        "player": 0,
+        "step": 120,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 50, 3],
+            [2, 1, 4.0, 0.0, 1.0, 1, 9],
+            [3, -1, 5.0, 0.0, 1.0, 1, 2],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    chosen_candidates = [
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_id"] in result["decision"]["chosen_candidate_ids"]
+    ]
+
+    assert chosen_candidates[0]["candidate_type"] == "attack"
+    assert chosen_candidates[0]["target_planet_id"] == 2
+    assert chosen_candidates[0]["reason"] == "opportunistic attack score"
+
+
+def test_attack_ships_include_expected_production_before_arrival_and_margin():
+    obs = {
+        "player": 0,
+        "step": 120,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 80, 3],
+            [2, 1, 12.0, 0.0, 1.0, 2, 4],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    attack = next(
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_type"] == "attack"
+    )
+    expected_margin = max(2, attack["score_components"]["target_production"] // 2 + 1)
+
+    assert attack["ships"] == (
+        attack["score_components"]["target_ships"]
+        + attack["score_components"]["expected_target_production_before_arrival"]
+        + expected_margin
+        + 1
+    )
+    assert attack["score_components"]["attack_margin"] == expected_margin
+
+
+def test_high_risk_attack_overextension_is_rejected():
+    obs = {
+        "player": 0,
+        "step": 120,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 23, 10],
+            [2, 1, 4.0, 0.0, 1.0, 1, 2],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    attack = next(
+        candidate
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_type"] == "attack"
+    )
+
+    assert attack["legal"] is False
+    assert attack["rejection_reason"] == "attack_overextension"
+
+
+def test_orbit_attack_samples_intercept_with_attack_ship_count(monkeypatch):
+    captured = {}
+
+    def fake_sample_orbit_intercept(source, target, initial_target, angular_velocity, ships, **_kwargs):
+        captured["ships"] = ships
+        return {
+            "angle": 0.0,
+            "distance": 5.0,
+            "travel_turns": 2,
+            "intercept_turn": 2,
+            "timing_error": 0,
+            "predicted_target": (75.0, 50.0),
+            "sun_blocked": False,
+        }
+
+    monkeypatch.setattr(main.prediction, "sample_orbit_intercept", fake_sample_orbit_intercept)
+    obs = {
+        "player": 0,
+        "step": 5,
+        "angular_velocity": 0.0,
+        "initial_planets": [
+            [1, 0, 70.0, 50.0, 1.0, 80, 3],
+            [2, 1, 75.0, 50.0, 1.0, 2, 4],
+        ],
+        "planets": [
+            [1, 0, 70.0, 50.0, 1.0, 80, 3],
+            [2, 1, 75.0, 50.0, 1.0, 2, 4],
+        ],
+        "fleets": [],
+    }
+
+    main.decide_with_trace(obs)
+
+    assert captured["ships"] > 3

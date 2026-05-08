@@ -1,0 +1,173 @@
+{
+  "generated_at": "2026-05-08T22:08:13.878390+00:00",
+  "agent_version": "nearest_sniper_v2_traceable",
+  "agents": [
+    "main.py",
+    "random"
+  ],
+  "opponents": [
+    "random"
+  ],
+  "start_seed": 1,
+  "games": 5,
+  "wins": 5,
+  "losses": 0,
+  "ties": 0,
+  "win_rate": 1.0,
+  "average_reward": 1.0,
+  "average_final_ship_score": 3760.0,
+  "average_duration_ms": 40227.942965365946,
+  "error_count": 0,
+  "results": [
+    {
+      "seed": 1,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable_task10_smoke/nearest_sniper_v2_traceable_vs_random_seed_0001.jsonl",
+      "num_steps": 254,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 57796.07387888245,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        253,
+        null
+      ],
+      "final_ship_scores": [
+        4956,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 2,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable_task10_smoke/nearest_sniper_v2_traceable_vs_random_seed_0002.jsonl",
+      "num_steps": 161,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 35612.977529875934,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        160,
+        null
+      ],
+      "final_ship_scores": [
+        3294,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 3,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable_task10_smoke/nearest_sniper_v2_traceable_vs_random_seed_0003.jsonl",
+      "num_steps": 179,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 42681.11322610639,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        178,
+        null
+      ],
+      "final_ship_scores": [
+        2897,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 4,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable_task10_smoke/nearest_sniper_v2_traceable_vs_random_seed_0004.jsonl",
+      "num_steps": 209,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 34864.525645039976,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        208,
+        null
+      ],
+      "final_ship_scores": [
+        3727,
+        0
+      ],
+      "winner_agent_index": 0
+    },
+    {
+      "seed": 5,
+      "output_path": "data/rollouts_v2/nearest_sniper_v2_traceable_task10_smoke/nearest_sniper_v2_traceable_vs_random_seed_0005.jsonl",
+      "num_steps": 156,
+      "schema_version": 2,
+      "generator_version": "rollout_generator_v2_decision_trace",
+      "agent_versions": [
+        "nearest_sniper_v2_traceable",
+        "builtin_random"
+      ],
+      "duration_ms": 30185.02454692498,
+      "errors": [],
+      "rewards": [
+        1,
+        -1
+      ],
+      "statuses": [
+        "DONE",
+        "DONE"
+      ],
+      "final_steps": [
+        155,
+        null
+      ],
+      "final_ship_scores": [
+        3926,
+        0
+      ],
+      "winner_agent_index": 0
+    }
+  ]
+}
