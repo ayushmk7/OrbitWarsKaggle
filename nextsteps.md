@@ -18,8 +18,10 @@
 - Tests exist for decision tracing and rollout metadata.
 - `results/local_rollouts_v2_smoke.json` records zero rollout trace errors after action-alignment fixes.
 - `geometry.py` must match the installed Kaggle environment physics before further strategy tuning; in particular, fleet speed uses the `** 1.5` log curve from `README.md` and the environment source.
+- `prediction.py` contains initial-position orbit prediction and approximate intercept sampling for orbit-aware targeting.
+- `main.py` now uses phase-aware reserves, per-source budgeted move selection, and candidate budget trace fields.
 - `plan.md` defines the long-term direction: strong rule-based agent first, optional DPO candidate ranking later.
-- `.gitignore` currently ignores `.venv`, `__pycache__`, and `*.py[cod]`, but generated data/results are not ignored.
+- `.gitignore` ignores only local caches, Python bytecode, virtual environments, and `submission.tar.gz`; generated evidence directories remain trackable.
 
 ## Submission Policy
 
@@ -33,6 +35,8 @@
 ---
 
 ## Task 1: Fix Rollout Trace Validation
+
+**Status:** Implemented. `generate_rollouts.py` records the exact `main.py` decision used during `env.run(...)`, falls back to recomputation only when a recorded decision is unavailable, and keeps action validation disabled by default for replay alignment. Strict mismatch detection remains available through `validate_actions=True`.
 
 **Files:**
 - Modify: `generate_rollouts.py`
@@ -94,6 +98,8 @@ git commit -m "fix rollout action trace validation"
 
 ## Task 2: Track Generated Artifacts
 
+**Status:** Implemented. Generated evidence folders remain visible to git, and `submission.tar.gz` is ignored by default unless explicitly force-added for a reproducible submission artifact.
+
 **Files:**
 - Modify: `.gitignore`
 - Track rollout JSONL, replay logs, local competition downloads, and benchmark summaries when they support agent comparisons or debugging.
@@ -138,6 +144,8 @@ git commit -m "track generated rollout evidence"
 ---
 
 ## Task 3: Build A Real Evaluation Command
+
+**Status:** Implemented. `evaluate.py` can run fixed seed ranges, write JSON summaries, and report wins, losses, ties, win rate, reward, final ship score, duration, errors, agent version, opponents, and seed range.
 
 **Files:**
 - Create: `evaluate.py`
@@ -206,6 +214,8 @@ git commit -m "add local evaluation summary command"
 
 ## Task 4: Add Geometry And Safety Helpers
 
+**Status:** Implemented for static geometry and sun safety. `geometry.py` owns distance, angle, fleet speed, travel turns, circle intersection, and sun-shot checks. Orbit prediction now lives in `prediction.py` instead of `geometry.py`.
+
 **Files:**
 - Create: `geometry.py`
 - Test: `tests/test_geometry.py`
@@ -248,6 +258,8 @@ git commit -m "add orbit wars geometry helpers"
 ---
 
 ## Task 5: Upgrade Expansion Scoring
+
+**Status:** Implemented and repaired. `decide_with_trace(obs)` now uses `obs["step"]`, records every selected and rejected candidate in `decision["candidates"]`, preserves raw move output from `agent(obs)`, and scores targets by production value, ship cost, travel time, reserve pressure, and remaining turns.
 
 **Files:**
 - Modify: `main.py`
@@ -316,6 +328,8 @@ git commit -m "score expansion by production value"
 
 ## Task 6: Add Sun-Safe Candidate Filtering
 
+**Status:** Implemented. Static direct-shot candidates that cross the sun remain in traces with `legal == False` and `rejection_reason == "sun_blocked"`. Sun-blocked rejection is preserved ahead of budget/selection rejections.
+
 **Files:**
 - Modify: `main.py`
 - Test: `tests/test_main_decisions.py`
@@ -380,6 +394,23 @@ git commit -m "avoid sun-blocked launches"
 - Candidates that no longer fit the remaining source budget are rejected with `rejection_reason == "source_budget_exhausted"`.
 - Candidates rejected because they would violate reserve are rejected with `rejection_reason == "reserve_too_low"`.
 - Existing rejection reasons from earlier tasks remain valid: `sun_blocked`, `insufficient_source_ships`, and `not_highest_scoring_target_for_source` should not disappear unless replaced intentionally by budget-specific reasons.
+
+**Status:** Implemented with `_game_phase(...)`, `_desired_reserve(...)`, and `_select_budgeted_candidates(...)` in `main.py`.
+
+Actual trace additions:
+
+- top-level candidate fields: `source_budget_before`, `source_budget_after`, `desired_reserve`
+- `score_components` fields: `game_phase`, `preliminary_score`, `base_reserve`
+- preserved rejection reasons: `sun_blocked`, `insufficient_source_ships`
+- budget rejection reasons: `non_positive_score`, `reserve_too_low`, `source_budget_exhausted`
+
+Actual selection behavior:
+
+- considers candidates per source in descending score order
+- can choose multiple candidates per source
+- caps selected moves per source with `MAX_MOVES_PER_SOURCE`
+- never selects moves that violate the phase-aware reserve rule
+- sets `decision["chosen_reason"]` to `selected budgeted production-scored legal targets`
 
 ### Task 7.1: Define Phase-Aware Reserve Rules
 
@@ -1023,6 +1054,31 @@ git commit -m "detail source ship budgeting plan"
 ---
 
 ## Task 8: Add Orbit-Aware Targeting
+
+**Status:** Implemented with `prediction.py` and `tests/test_prediction.py`.
+
+Actual helper API:
+
+- `planet_by_id(planets)`
+- `is_orbiting_planet(planet, center=(50.0, 50.0), rotation_radius_limit=50.0)`
+- `predict_orbit_position(initial_planet, angular_velocity, turns, center=(50.0, 50.0))`
+- `sample_orbit_intercept(source, target, initial_target, angular_velocity, ships, max_turns=80, timing_tolerance=2.0)`
+
+`main.py` uses `initial_planets` and `angular_velocity` when `initial_planets` is present. If `initial_planets` is absent, static direct-shot behavior is preserved for synthetic tests and simple observations.
+
+Actual orbit trace fields in `score_components`:
+
+- `target_is_orbiting`
+- `intercept_turn`
+- `timing_error`
+- `predicted_target_x`
+- `predicted_target_y`
+- `used_initial_planet`
+
+Actual orbit rejection reasons:
+
+- `no_orbit_intercept`
+- `orbit_intercept_sun_blocked`
 
 **Files:**
 - Create: `prediction.py`

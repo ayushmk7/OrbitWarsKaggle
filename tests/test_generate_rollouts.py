@@ -73,7 +73,7 @@ def test_make_recording_agent_records_exact_decision_used_for_action():
     assert recorded["agent_name"] == "main.py"
     assert recorded["observation_step"] == 1
     assert recorded["chosen_moves"] == moves
-    assert recorded["chosen_reason"] == "selected highest-scoring legal production target per owned planet"
+    assert recorded["chosen_reason"] == "selected budgeted production-scored legal targets"
 
 
 def test_build_agent_decisions_uses_recorded_decisions_without_recomputing(monkeypatch):
