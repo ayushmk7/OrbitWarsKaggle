@@ -1,20 +1,3 @@
-"""
-Orbit Wars - Production-Scored Expansion Agent
-
-A traceable rule-based agent that scores unowned planets by production value,
-travel time, capture cost, source reserve, and sun safety.
-
-Strategy:
-  For each planet we own, evaluate planets we don't own and choose the
-  highest-scoring legal target.
-
-Key concepts demonstrated:
-  - Parsing the observation (planets, player ID)
-  - Computing angles for fleet direction
-  - Rejecting sun-blocked launches before selection
-  - Sending moves as [from_planet_id, angle, num_ships]
-"""
-
 import math
 import time
 from collections import namedtuple
