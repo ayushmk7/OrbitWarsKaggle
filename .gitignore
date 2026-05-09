@@ -2,3 +2,9 @@
 __pycache__/
 *.py[cod]
 submission.tar.gz
+
+data/
+results/
+replays/
+logs/
+orbit-wars-data/
