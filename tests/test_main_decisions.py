@@ -534,3 +534,69 @@ def test_orbit_attack_samples_intercept_with_attack_ship_count(monkeypatch):
     main.decide_with_trace(obs)
 
     assert captured["ships"] > 3
+
+# Before step 470, normal logic applies
+def test_before_endgame_normal_reserve():
+    planet = main.Planet(1, 0, 0.0, 0.0, 1.0, 50, 8)
+    
+    reserve_late = main._desired_reserve(planet, step=450, score=100) # late game
+    reserve_endgame = main._desired_reserve(planet, step=470, score=100) # endgame
+
+    assert reserve_late == 4
+    assert reserve_endgame == 1
+    assert reserve_late > reserve_endgame
+    
+    
+# After step 470, surplus ships prefer reachable targets
+def test_endgame_reachable_attack_selected():
+    obs = {
+        "player": 0,
+        "step": 475,
+        "planets": [
+            [1, 0,  0.0,  0.0, 1.0, 60, 3],
+            [2, 1,  4.0,  0.0, 1.0,  2, 4],
+            [3, 1, 60.0,  0.0, 1.0,  2, 4],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    candidates_by_target = {
+        c["target_planet_id"]: c for c in result["decision"]["candidates"]
+    }
+    
+    assert candidates_by_target[2]["legal"] is True
+    assert candidates_by_target[2]["candidate_id"] in result["decision"]["chosen_candidate_ids"]
+
+    assert candidates_by_target[3]["legal"] is False
+    assert candidates_by_target[3]["rejection_reason"] == "endgame_unreachable"
+
+# Agent does not empty planet that can be captured immediately
+def test_endgame_does_not_empty_threatened_planet():
+    obs = {
+        "player": 0,
+        "step": 480,
+        "planets": [
+            [1, 0, 10.0, 10.0, 1.0, 30, 3], # threatened planet
+            [2, -1, 11.0, 10.0, 1.0,  1, 2], # neutral planet to expand to
+        ],
+        "fleets": [
+            [99, 1, 10.5, 10.0, 3.14159, 5, 10],
+        ],
+    }
+
+    result = main.decide_with_trace(obs)
+
+    ships_sent_from_1 = sum(move[2] for move in result["moves"] if move[0] == 1)
+    assert ships_sent_from_1 <= 15
+
+    attack_candidates = [
+        c for c in result["decision"]["candidates"]
+        if c["source_planet_id"] == 1 and c["target_planet_id"] == 2
+    ]
+    if attack_candidates:
+        c = attack_candidates[0]
+        if c["legal"]:
+            assert c["ships"] <= 15
+        else:
+            assert c["rejection_reason"] in ("reserve_too_low", "source_budget_exhausted")
