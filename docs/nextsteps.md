@@ -1126,6 +1126,8 @@ git commit -m "add orbit-aware targeting"
 
 ## Task 9: Add Basic Defense
 
+**Status:** Implemented and verified. `main.py` detects incoming enemy fleets with `_detect_incoming_threats(...)`, builds reinforcement candidates with `_generate_reinforce_candidates(...)`, and allocates them through `_select_defense_candidates(...)` using the same source-budget and reserve discipline as expansion/attack candidates. `results/standard_defense.json` records a 100-game random-opponent benchmark with zero rollout errors.
+
 **Files:**
 - Modify: `main.py`
 - Test: `tests/test_main_decisions.py`
@@ -1174,6 +1176,8 @@ git commit -m "add basic defensive reinforcements"
 
 ## Task 10: Add Opportunistic Attacks
 
+**Status:** Implemented and verified. `main.py` scores enemy planets separately with `_score_attack_candidate(...)`, includes expected enemy production and `_attack_margin(...)` in `_attack_ships_needed(...)`, and rejects risky attacks through `_attack_overextends_source(...)`. `results/standard_attacks.json` records a 100-game random-opponent benchmark with zero rollout errors.
+
 **Files:**
 - Modify: `main.py`
 - Test: `tests/test_main_decisions.py`
@@ -1212,6 +1216,8 @@ git commit -m "add opportunistic attack scoring"
 
 ## Task 11: Add Endgame Logic
 
+**Status:** Implemented and verified. `main.py` now uses `ENDGAME_START`, `_is_endgame(...)`, `_arrives_before_end(...)`, and `_endgame_candidate_bonus(...)` to add late-game trace fields and reject final-phase targets that cannot arrive before turn 500 with `too_late_to_arrive`. `results/standard_endgame.json` records a 100-game random-opponent benchmark with zero rollout errors.
+
 **Files:**
 - Modify: `main.py`
 - Test: `tests/test_main_decisions.py`
@@ -1249,6 +1255,8 @@ git commit -m "add endgame score conversion"
 ---
 
 ## Task 12: Run Submission-Grade Validation
+
+**Status:** Implemented and verified. The agent version is frozen as `rule_based_submission_v1`, the full pytest suite passes, and `results/submission_rule_based_submission_v1.json` records a 200-game held-out random-opponent benchmark with zero rollout errors.
 
 **Files:**
 - Read: `results/*.json`
@@ -1313,6 +1321,8 @@ git commit -m "prepare rule based submission candidate"
 
 ## Task 13: Package The Submission
 
+**Status:** Packaged and locally verified. `submission.tar.gz` contains only `main.py`, `geometry.py`, and `prediction.py`, and the final local smoke game completed with valid `DONE` statuses.
+
 **Files:**
 - Runtime files: `main.py` and any helper modules imported by `main.py`
 - Output: `submission.tar.gz` only if multi-file
@@ -1353,6 +1363,8 @@ Expected: no exception and valid final statuses.
 ---
 
 ## Task 14: Submit And Monitor Kaggle
+
+**Status:** Blocked by Kaggle API server error after local packaging and access checks passed. Kaggle CLI authentication works, the account has entered `orbit-wars`, and two submit attempts uploaded `submission.tar.gz` but failed with `500 Server Error: Internal Server Error` from `CreateSubmission`. `kaggle competitions submissions orbit-wars` reported `No submissions found` after the failed attempts.
 
 **Files:**
 - Create/download as generated artifacts: `replays/`, `logs/`
@@ -1414,6 +1426,8 @@ kaggle competitions leaderboard orbit-wars -s
 
 ## Task 15: Replay Feedback Loop
 
+**Status:** Partially complete from local evidence; Kaggle replay download is pending a successful submission. The frozen held-out benchmark has one local loss, seed `1010`, at `data/rollouts_v2/rule_based_submission_v1/rule_based_submission_v1_vs_random_seed_1010.jsonl`. Initial classification is `missed_expansion` with secondary `weak_attack`: by turn 100 the opponent owned more production while our agent still owned one low-production planet.
+
 **Files:**
 - Generated: `replays/`, `logs/`
 - Modify based on findings: `main.py`, helper modules, tests
@@ -1457,6 +1471,8 @@ kaggle competitions submit orbit-wars -f submission.tar.gz -m "rule_based_submis
 ```
 
 - [ ] **Step 5: Defer DPO until the rule engine plateaus**
+
+Current gate decision: keep DPO deferred. The rule engine has not plateaued because the available local loss points to a rule-level early expansion/attack weakness, not clear evidence that the correct legal candidate exists and is merely ranked below a worse candidate. Do not create `dpo_data.py`, `dpo_ranker.py`, or `dpo_judge.py` until successful Kaggle replays or additional held-out losses show repeated ranking mistakes.
 
 Start DPO only after:
 

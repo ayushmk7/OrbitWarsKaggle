@@ -500,6 +500,30 @@ def test_high_risk_attack_overextension_is_rejected():
     assert attack["rejection_reason"] == "attack_overextension"
 
 
+def test_attack_rejects_sun_blocked_enemy_target():
+    obs = {
+        "player": 0,
+        "step": 150,
+        "planets": [
+            [1, 0, 20.0, 50.0, 1.0, 80, 4],
+            [2, 1, 80.0, 50.0, 1.0, 1, 10],
+            [3, -1, 20.0, 80.0, 1.0, 1, 4],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    by_target = {
+        candidate["target_planet_id"]: candidate
+        for candidate in result["decision"]["candidates"]
+    }
+
+    assert by_target[2]["candidate_type"] == "attack"
+    assert by_target[2]["legal"] is False
+    assert by_target[2]["rejection_reason"] == "sun_blocked"
+    assert all(move[1] != 0.0 for move in result["moves"])
+
+
 def test_orbit_attack_samples_intercept_with_attack_ship_count(monkeypatch):
     captured = {}
 
@@ -535,19 +559,18 @@ def test_orbit_attack_samples_intercept_with_attack_ship_count(monkeypatch):
 
     assert captured["ships"] > 3
 
-# Before step 470, normal logic applies
+
 def test_before_endgame_normal_reserve():
     planet = main.Planet(1, 0, 0.0, 0.0, 1.0, 50, 8)
-    
-    reserve_late = main._desired_reserve(planet, step=450, score=100) # late game
-    reserve_endgame = main._desired_reserve(planet, step=470, score=100) # endgame
+
+    reserve_late = main._desired_reserve(planet, step=450, score=100)
+    reserve_endgame = main._desired_reserve(planet, step=470, score=100)
 
     assert reserve_late == 4
     assert reserve_endgame == 1
     assert reserve_late > reserve_endgame
-    
-    
-# After step 470, surplus ships prefer reachable targets
+
+
 def test_endgame_reachable_attack_selected():
     obs = {
         "player": 0,
@@ -564,21 +587,78 @@ def test_endgame_reachable_attack_selected():
     candidates_by_target = {
         c["target_planet_id"]: c for c in result["decision"]["candidates"]
     }
-    
+
     assert candidates_by_target[2]["legal"] is True
     assert candidates_by_target[2]["candidate_id"] in result["decision"]["chosen_candidate_ids"]
 
     assert candidates_by_target[3]["legal"] is False
-    assert candidates_by_target[3]["rejection_reason"] == "endgame_unreachable"
 
-# Agent does not empty planet that can be captured immediately
+
+def test_before_endgame_normal_scoring_applies():
+    obs = {
+        "player": 0,
+        "step": 469,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 30, 3],
+            [2, -1, 5.0, 0.0, 1.0, 2, 8],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    candidate = result["decision"]["candidates"][0]
+
+    assert candidate["score_components"]["game_phase"] == "late"
+    assert candidate["score_components"].get("endgame_bonus", 0) == 0
+
+
+def test_endgame_prefers_reachable_target():
+    obs = {
+        "player": 0,
+        "step": 475,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 80, 3],
+            [2, 1, 5.0, 0.0, 1.0, 2, 8],
+            [3, 1, 90.0, 0.0, 1.0, 2, 20],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    chosen_targets = {
+        candidate["target_planet_id"]
+        for candidate in result["decision"]["candidates"]
+        if candidate["candidate_id"] in result["decision"]["chosen_candidate_ids"]
+    }
+
+    assert 2 in chosen_targets
+
+
+def test_endgame_rejects_targets_that_cannot_arrive_before_finish():
+    obs = {
+        "player": 0,
+        "step": 499,
+        "planets": [
+            [1, 0, 5.0, 5.0, 1.0, 200, 3],
+            [2, 1, 5.0, 95.0, 1.0, 1, 1],
+        ],
+        "fleets": [],
+    }
+
+    result = main.decide_with_trace(obs)
+    candidate = result["decision"]["candidates"][0]
+
+    assert candidate["legal"] is False
+    assert candidate["rejection_reason"] == "endgame_unreachable"
+
+
 def test_endgame_does_not_empty_threatened_planet():
     obs = {
         "player": 0,
         "step": 480,
         "planets": [
-            [1, 0, 10.0, 10.0, 1.0, 30, 3], # threatened planet
-            [2, -1, 11.0, 10.0, 1.0,  1, 2], # neutral planet to expand to
+            [1, 0, 10.0, 10.0, 1.0, 30, 3],
+            [2, -1, 11.0, 10.0, 1.0,  1, 2],
         ],
         "fleets": [
             [99, 1, 10.5, 10.0, 3.14159, 5, 10],
@@ -600,3 +680,22 @@ def test_endgame_does_not_empty_threatened_planet():
             assert c["ships"] <= 15
         else:
             assert c["rejection_reason"] in ("reserve_too_low", "source_budget_exhausted")
+
+
+def test_endgame_does_not_empty_capturable_valuable_planet():
+    obs = {
+        "player": 0,
+        "step": 480,
+        "planets": [
+            [1, 0, 0.0, 0.0, 1.0, 12, 10],
+            [2, 1, 4.0, 0.0, 1.0, 1, 2],
+        ],
+        "fleets": [
+            [10, 1, 3.0, 0.0, math.pi, 3, 10],
+        ],
+    }
+
+    result = main.decide_with_trace(obs)
+    source_spend = sum(move[2] for move in result["moves"] if move[0] == 1)
+
+    assert source_spend < 12

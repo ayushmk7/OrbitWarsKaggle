@@ -12,14 +12,13 @@ except ModuleNotFoundError:
 Fleet = namedtuple("Fleet", "id owner x y angle from_planet_id ships")
 
 
-AGENT_VERSION = "nearest_sniper_v2_traceable"
+AGENT_VERSION = "rule_based_submission_v1"
 MAX_TURNS = 500
 EARLY_GAME_END = 150
 LATE_GAME_START = 400
+ENDGAME_START = 470
 MIN_PROFITABLE_SCORE = 0
 MAX_MOVES_PER_SOURCE = 2
-ENDGAME_START = 470
-ENDGAME_HARD_DEADLINE = 500
 
 # obs is dict -> returns value of attribute key (or default, if NONE)
 # obs is object -> returns value of attribute element (or default, if NONE)
@@ -50,11 +49,27 @@ def _reinforce_candidate_id(step, source_id, target_id, fleet_id, ships):
 def _game_phase(step):
     if step < EARLY_GAME_END:
         return "early"
-    if step >= ENDGAME_START:
-        return "endgame"
     if step >= LATE_GAME_START:
         return "late"
     return "mid"
+
+
+def _is_endgame(step):
+    return step >= ENDGAME_START
+
+
+def _arrives_before_end(step, travel_turns):
+    return step + travel_turns <= MAX_TURNS
+
+
+def _endgame_candidate_bonus(step, target, travel_turns, is_attack):
+    if not _is_endgame(step):
+        return 0
+    if not _arrives_before_end(step, travel_turns):
+        return -1000
+    capture_value = target.ships + max(0, target.production) * max(0, MAX_TURNS - step)
+    denial_multiplier = 2 if is_attack else 1
+    return capture_value * denial_multiplier
 
 
 def _ray_circle_first_distance(origin_x, origin_y, angle, center_x, center_y, radius):
@@ -146,12 +161,6 @@ def _desired_reserve(source, step, score):
         if production >= 5:
             return max(5, production)
         return max(3, production)
-    
-    # keep enough to prevent immediate flip if threat exists
-    if phase == "endgame":
-        if score > MIN_PROFITABLE_SCORE:
-            return 1
-        return max(1, production // 4)
 
     if score > MIN_PROFITABLE_SCORE:
         return max(1, production // 2)
@@ -267,14 +276,18 @@ def _score_candidate(mine, target, step, ships_needed, distance, travel_turns, s
     base_reserve = max(1, mine.production)
     base_reserve_penalty = max(0, base_reserve - source_reserve_after)
     production_value = target.production * remaining_after_arrival
+    endgame_bonus = _endgame_candidate_bonus(step, target, travel_turns, is_attack=False)
     ship_cost = ships_needed
     travel_cost = travel_turns
-    preliminary_score = production_value - ship_cost - travel_cost - base_reserve_penalty
+    preliminary_score = production_value + endgame_bonus - ship_cost - travel_cost - base_reserve_penalty
     desired_reserve = _desired_reserve(mine, step, preliminary_score)
     reserve_penalty = max(0, desired_reserve - source_reserve_after)
-    score = production_value - ship_cost - travel_cost - reserve_penalty
+    score = production_value + endgame_bonus - ship_cost - travel_cost - reserve_penalty
     score_components = {
         "production_value": production_value,
+        "endgame_bonus": endgame_bonus,
+        "arrives_before_end": _arrives_before_end(step, travel_turns),
+        "turns_remaining": max(0, MAX_TURNS - step),
         "ship_cost": ship_cost,
         "travel_cost": travel_cost,
         "travel_turns": travel_turns,
@@ -327,16 +340,20 @@ def _score_attack_candidate(mine, target, step, ships_needed, distance, travel_t
     production_value = target.production * remaining_after_arrival
     enemy_denial_value = target.production * max(0, remaining_after_arrival // 2)
     weak_garrison_bonus = max(0, 20 - target.ships) * 10
+    endgame_bonus = _endgame_candidate_bonus(step, target, travel_turns, is_attack=True)
     ship_cost = ships_needed
     travel_cost = travel_turns * 2
-    preliminary_score = production_value + enemy_denial_value + weak_garrison_bonus - ship_cost - travel_cost
+    preliminary_score = production_value + enemy_denial_value + weak_garrison_bonus + endgame_bonus - ship_cost - travel_cost
     desired_reserve = _desired_reserve(mine, step, preliminary_score)
     reserve_penalty = max(0, desired_reserve - source_reserve_after) * 2
-    score = production_value + enemy_denial_value + weak_garrison_bonus - ship_cost - travel_cost - reserve_penalty
+    score = production_value + enemy_denial_value + weak_garrison_bonus + endgame_bonus - ship_cost - travel_cost - reserve_penalty
     score_components = {
         "production_value": production_value,
         "enemy_denial_value": enemy_denial_value,
         "weak_garrison_bonus": weak_garrison_bonus,
+        "endgame_bonus": endgame_bonus,
+        "arrives_before_end": _arrives_before_end(step, travel_turns),
+        "turns_remaining": max(0, MAX_TURNS - step),
         "ship_cost": ship_cost,
         "travel_cost": travel_cost,
         "travel_turns": travel_turns,
@@ -361,9 +378,6 @@ def _score_attack_candidate(mine, target, step, ships_needed, distance, travel_t
 
 
 def _attack_overextends_source(mine, ships_needed, desired_reserve):
-    # convert all surplus ships
-    if _game_phase(step) == "endgame":
-        return False
     available_after_reserve = mine.ships - desired_reserve
     if available_after_reserve <= 0:
         return True
@@ -480,15 +494,6 @@ def _generate_reinforce_candidates(threats, my_planets, step):
             )
     return candidates
 
-def _attack_can_arrive(step, travel_turns):
-    return step + travel_turns < ENDGAME_HARD_DEADLINE
-
-def _endgame_capture_risk(mine, enemy_fleets):
-    for fleet in enemy_fleets:
-        dist = geometry.distance_xy(fleet.x, fleet.y, mine.x, mine.y)
-        if geometry.turns_to_reach(dist, fleet_ships) <= 1:
-            return True
-    return False
 
 def decide_with_trace(obs):
     started = time.perf_counter()
@@ -620,10 +625,6 @@ def decide_with_trace(obs):
                         orbit_trace,
                     )
                 source_reserve_after = mine.ships - ships_needed
-                
-                if _game_phase(step) == "endgame" and _endgame_capture_risk(mine, enemy_fleets):
-                    desired_reserve = max(desired_reserve, mine.ships // 2)
-                    
                 affordable = mine.ships >= ships_needed
                 reserve_ok = source_reserve_after >= desired_reserve
                 attack_overextended = (
@@ -632,20 +633,18 @@ def decide_with_trace(obs):
                     and reserve_ok
                     and _attack_overextends_source(mine, ships_needed, desired_reserve)
                 )
-                endgame_unreachable = (
-                    _game_phase(step) == "endgame"
-                    and is_attack
-                    and not _attack_can_arrive(step, travel_turns)
-                )
+                too_late_to_arrive = _is_endgame(step) and not _arrives_before_end(step, travel_turns)
                 legal = (
                     affordable
                     and reserve_ok
                     and not attack_overextended
+                    and not too_late_to_arrive
                     and not sun_blocked
                     and orbit_rejection_reason is None
-                    and not endgame_unreachable
                 )
-                if orbit_rejection_reason is not None:
+                if too_late_to_arrive:
+                    rejection_reason = "too_late_to_arrive"
+                elif orbit_rejection_reason is not None:
                     rejection_reason = orbit_rejection_reason
                 elif sun_blocked:
                     rejection_reason = "sun_blocked"
@@ -655,8 +654,6 @@ def decide_with_trace(obs):
                     rejection_reason = "reserve_too_low"
                 elif attack_overextended:
                     rejection_reason = "attack_overextension"
-                elif endgame_unreachable:
-                    rejection_reason = "endgame_unreachable"
                 else:
                     rejection_reason = None
                 candidate = {
