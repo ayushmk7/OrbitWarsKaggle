@@ -22,28 +22,6 @@ def turns_to_reach(distance, ships, max_speed=6.0):
     return math.ceil(distance / fleet_speed(ships, max_speed))
 
 
-def min_ships_for_arrival(distance, max_arrival_turns, max_speed=6.0, cap=1000):
-    """Smallest fleet size that reaches ``distance`` within ``max_arrival_turns``.
-
-    Fleet speed scales with size, so tiny fleets crawl. For distant targets we
-    enforce a minimum fleet so it arrives in a reasonable window instead of
-    taking 3x longer than a large fleet would. Returns 1 if a single ship is
-    already fast enough, or ``cap`` if even the max-speed fleet cannot make it.
-    """
-    if distance <= 0 or max_arrival_turns <= 0:
-        return 1
-    if turns_to_reach(distance, 1, max_speed) <= max_arrival_turns:
-        return 1
-    lo, hi = 1, cap
-    while lo < hi:
-        mid = (lo + hi) // 2
-        if turns_to_reach(distance, mid, max_speed) <= max_arrival_turns:
-            hi = mid
-        else:
-            lo = mid + 1
-    return lo
-
-
 def segment_intersects_circle(ax, ay, bx, by, cx, cy, radius):
     dx = bx - ax
     dy = by - ay

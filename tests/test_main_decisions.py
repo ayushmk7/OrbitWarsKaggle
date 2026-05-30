@@ -58,8 +58,12 @@ def test_decide_with_trace_records_candidates_scores_and_chosen_reason():
     assert chosen["target_planet_id"] == 2
     assert chosen["move"] == result["moves"][0]
     assert chosen["travel_turns"] == 4
-    assert chosen["score"] == 4830
+    # Score now includes A9 early-rush bonus (+700), A6 economy weighting
+    # (+968), and A12 positional value (+20) on top of the base production
+    # value (4840); see solution_a_v3 scoring.
+    assert chosen["score"] == 6518
     assert chosen["score_components"]["production_value"] == 4840
+    assert chosen["score_components"]["early_game_bonus"] == 700
     assert chosen["legal"] is True
     assert chosen["rejection_reason"] is None
     assert chosen["reason"] == "highest production-adjusted expansion score"
@@ -170,7 +174,9 @@ def test_sun_blocked_candidate_is_rejected_and_safe_target_is_chosen():
 
     result = main.decide_with_trace(obs)
 
-    assert result["moves"] == [[1, math.pi / 2, 2]]
+    # A7 speed floor: the safe target sits 30 units away, so the fleet is sized
+    # up from 2 to 5 ships to arrive within the speed window instead of crawling.
+    assert result["moves"] == [[1, math.pi / 2, 5]]
     candidates_by_target = {
         candidate["target_planet_id"]: candidate
         for candidate in result["decision"]["candidates"]

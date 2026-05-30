@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from typing import Any
 
-import geometry
+import geometry_v1 as geometry
 
 
 def planet_by_id(planets: list[Any]) -> dict[int, Any]:
@@ -40,32 +40,21 @@ def sample_orbit_intercept(
     initial_target: Any,
     angular_velocity: float,
     ships: int,
-    current_step: int = 0,
     max_turns: int = 80,
     timing_tolerance: float = 2.0,
 ) -> dict[str, Any] | None:
-    """Find the launch angle that intercepts an orbiting target.
-
-    The game rotates planets to ``initial_angle + angular_velocity * step`` using
-    the ABSOLUTE game step (see orbit_wars.interpreter). A fleet launched now
-    arrives in ``travel_turns`` turns, i.e. at absolute step
-    ``current_step + future_turn``. We therefore predict the target's position at
-    ``current_step + future_turn`` and compare travel time against ``future_turn``
-    (the offset from now), not against an absolute turn index.
-    """
     best_sample = None
     best_error = float("inf")
 
-    for future_turn in range(1, max_turns + 1):
-        absolute_turn = current_step + future_turn
+    for intercept_turn in range(1, max_turns + 1):
         predicted_x, predicted_y = predict_orbit_position(
             initial_target,
             angular_velocity,
-            absolute_turn,
+            intercept_turn,
         )
         distance = geometry.distance_xy(source.x, source.y, predicted_x, predicted_y)
         travel_turns = geometry.turns_to_reach(distance, ships)
-        timing_error = abs(travel_turns - future_turn)
+        timing_error = abs(travel_turns - intercept_turn)
         sun_blocked = geometry.shot_hits_sun(
             (source.x, source.y),
             (predicted_x, predicted_y),
@@ -77,8 +66,7 @@ def sample_orbit_intercept(
                 "angle": geometry.angle_to_xy(source.x, source.y, predicted_x, predicted_y),
                 "distance": distance,
                 "travel_turns": travel_turns,
-                "intercept_turn": absolute_turn,
-                "future_turn": future_turn,
+                "intercept_turn": intercept_turn,
                 "timing_error": timing_error,
                 "predicted_target": (predicted_x, predicted_y),
                 "sun_blocked": sun_blocked,
