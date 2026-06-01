@@ -22,9 +22,16 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import logging
+import math
 import os
 import sys
 import time
+
+# kaggle_environments logs a wall of OpenSpiel env-registration INFO lines on
+# import (the module sets its own logger level), so per-logger config doesn't
+# stick. Globally disable INFO/DEBUG before that import; WARNING+ still show.
+logging.disable(logging.INFO)
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -74,6 +81,9 @@ def resolve_agent(name: str) -> Callable[[Any], list]:
         return _load_baseline_agent()
     if name in ("random", "starter"):
         return _builtin_agent(name)
+    import opponents
+    if name in opponents.GYM:
+        return opponents.GYM[name]
     raise ValueError(f"unknown opponent: {name}")
 
 
@@ -119,27 +129,65 @@ def play_game(seat_agents: list[Callable], seed: int) -> dict[str, Any]:
     }
 
 
-def run_matchup(
-    opponent: str, games: int, start_seed: int, mode: str
-) -> dict[str, Any]:
-    new_agent = resolve_agent("main")
+def _seat_names(opponent: str, mode: str) -> list[str]:
+    """Opponent NAMES per seat (resolved inside each worker to avoid pickling
+    agent callables across processes)."""
     if mode == "4p":
         # seat 0 = new agent, seats 1-3 = a mix to simulate FFA
-        opp = resolve_agent(opponent)
-        seat_agents = [new_agent, opp, resolve_agent("baseline"), resolve_agent("starter")]
-    else:
-        seat_agents = [new_agent, resolve_agent(opponent)]
+        return ["main", opponent, "baseline", "starter"]
+    return ["main", opponent]
 
+
+def _wilson_interval(wins: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """Wilson score 95% confidence interval for a win rate. Pure Python."""
+    if n == 0:
+        return (0.0, 0.0)
+    phat = wins / n
+    denom = 1.0 + z * z / n
+    centre = (phat + z * z / (2 * n)) / denom
+    half = (z * math.sqrt(phat * (1 - phat) / n + z * z / (4 * n * n))) / denom
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
+def _play_seed_worker(task: tuple[str, str, int]) -> dict[str, Any]:
+    """Pool worker: resolve agents by name in-process, play one game, drop env."""
+    import gc
+
+    opponent, mode, seed = task
+    seat_agents = [resolve_agent(name) for name in _seat_names(opponent, mode)]
+    result = play_game(seat_agents, seed)
+    gc.collect()
+    return result
+
+
+def run_matchup(
+    opponent: str, games: int, start_seed: int, mode: str, workers: int = 1
+) -> dict[str, Any]:
+    import gc
+
+    seeds = list(range(start_seed, start_seed + games))
     results = []
     started = time.perf_counter()
-    for seed in range(start_seed, start_seed + games):
-        results.append(play_game(seat_agents, seed))
+    if workers and workers > 1:
+        import multiprocessing as mp
+
+        tasks = [(opponent, mode, seed) for seed in seeds]
+        with mp.Pool(processes=workers) as pool:
+            for r in pool.imap_unordered(_play_seed_worker, tasks):
+                results.append(r)
+        results.sort(key=lambda r: r["seed"])
+    else:
+        seat_agents = [resolve_agent(name) for name in _seat_names(opponent, mode)]
+        for seed in seeds:
+            results.append(play_game(seat_agents, seed))
+            gc.collect()
     duration = time.perf_counter() - started
 
     wins = sum(1 for r in results if r["outcome"] == "win")
     losses = sum(1 for r in results if r["outcome"] == "loss")
     ties = sum(1 for r in results if r["outcome"] == "tie")
     avg_margin = sum(r["my_score"] - r["best_other"] for r in results) / max(1, len(results))
+    ci_low, ci_high = _wilson_interval(wins, len(results))
     return {
         "opponent": opponent,
         "mode": mode,
@@ -148,6 +196,7 @@ def run_matchup(
         "losses": losses,
         "ties": ties,
         "win_rate": wins / max(1, games),
+        "win_rate_ci95": [ci_low, ci_high],
         "avg_score_margin": avg_margin,
         "avg_my_score": sum(r["my_score"] for r in results) / max(1, len(results)),
         "duration_s": duration,
@@ -162,6 +211,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--opponents", default="starter,baseline,random")
     parser.add_argument("--mode", choices=["2p", "4p"], default="2p")
     parser.add_argument("--summary", type=Path, default=None)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="parallel worker processes (>1 fans games over a multiprocessing Pool; "
+        "avoids the sequential OOM and speeds large runs)",
+    )
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
@@ -171,12 +227,13 @@ def main() -> None:
     opponents = [o.strip() for o in args.opponents.split(",") if o.strip()]
     matchups = []
     for opp in opponents:
-        m = run_matchup(opp, args.games, args.start_seed, args.mode)
+        m = run_matchup(opp, args.games, args.start_seed, args.mode, workers=args.workers)
         matchups.append(m)
+        lo, hi = m["win_rate_ci95"]
         print(
             f"vs {opp:<10} [{args.mode}]  "
             f"W{m['wins']:>3} L{m['losses']:>3} T{m['ties']:>3}  "
-            f"win_rate={m['win_rate']:.3f}  "
+            f"win_rate={m['win_rate']:.3f} (95% CI {lo:.2f}-{hi:.2f})  "
             f"avg_margin={m['avg_score_margin']:+.1f}  "
             f"({m['duration_s']:.1f}s)"
         )
