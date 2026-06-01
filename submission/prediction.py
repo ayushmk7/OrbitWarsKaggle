@@ -57,7 +57,13 @@ def sample_orbit_intercept(
     best_error = float("inf")
 
     for future_turn in range(1, max_turns + 1):
-        absolute_turn = current_step + future_turn
+        # Empirically the env's actual planet position at step S equals
+        # predict_orbit_position(initial, av, S - 1): rotation lags reporting by
+        # one step. Aiming at `current_step + future_turn` therefore leads the
+        # target by one orbital step (~1 unit), and with planet radius ~1.7 the
+        # fleet slips past every time. Subtract one step to aim where the target
+        # will actually BE on arrival.
+        absolute_turn = current_step + future_turn - 1
         predicted_x, predicted_y = predict_orbit_position(
             initial_target,
             angular_velocity,

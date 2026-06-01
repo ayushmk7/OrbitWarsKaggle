@@ -12,7 +12,7 @@ except ModuleNotFoundError:
 Fleet = namedtuple("Fleet", "id owner x y angle from_planet_id ships")
 
 
-AGENT_VERSION = "solution_a_v3_global_economy"
+AGENT_VERSION = "solution_a_v4_orbit_intercept_fix"
 MAX_TURNS = 500
 EARLY_GAME_END = 150
 LATE_GAME_START = 400
@@ -1064,10 +1064,17 @@ def decide_with_trace(obs):
                     if not target_is_orbiting:
                         angle = geometry.angle_to_xy(mine.x, mine.y, target.x, target.y)
 
-                # A2: subtract ships already in flight so we don't double-send.
+                # A2: account for ships already in flight. Fleets launched on
+                # DIFFERENT turns arrive on different ticks and do NOT combine
+                # in combat (only same-tick arrivals merge). Subtracting their
+                # ships from ships_needed made the agent dribble fleets too
+                # small to win -- each lost its fight and the target never fell.
+                # Instead: only treat a target as handled when in-flight ships
+                # already fully cover the requirement; otherwise keep the full
+                # requirement and require a single decisive launch (the source
+                # waits and accumulates rather than dribbling).
                 already_sent = pending.get(target.id, 0)
-                if already_sent > 0:
-                    ships_needed = max(1, ships_needed - already_sent)
+                already_covered = already_sent >= ships_needed
 
                 # A7: enforce a minimum fleet size for distant targets so the
                 # fleet does not crawl. Only kicks in past SPEED_MIN_DISTANCE,
@@ -1134,6 +1141,7 @@ def decide_with_trace(obs):
                     and reserve_ok
                     and not attack_overextended
                     and not sun_blocked
+                    and not already_covered
                     and orbit_rejection_reason is None
                     and not endgame_unreachable
                     and score > MIN_PROFITABLE_SCORE
@@ -1142,6 +1150,8 @@ def decide_with_trace(obs):
                     rejection_reason = orbit_rejection_reason
                 elif sun_blocked:
                     rejection_reason = "sun_blocked"
+                elif already_covered:
+                    rejection_reason = "already_inflight"
                 elif endgame_unreachable:
                     rejection_reason = "endgame_unreachable"
                 elif not affordable:
