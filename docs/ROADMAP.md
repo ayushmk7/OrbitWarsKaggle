@@ -41,14 +41,24 @@ overextension in-rollout, so on those seeds search just picks `greedy_full`. The
 tactical (avoiding doomed launches within the horizon) — hence the self-play win but the
 starter-tie.
 
-### Phase B-next (tuning to extract the strategic wins)
-- **Stronger opponent model:** model the opponent with our own greedy candidate generator (or a
-  shallow search), not just nearest-affordable — so rollouts punish overextension.
-- **Longer / adaptive horizon:** deepen when a planet is contested; the collapse needs depth.
-- **Evaluator weights:** tune `W_VULN` / add an explicit overextension term so a thin lead scores
-  below a consolidated one.
-- **Richer action-sets:** include alternative targets and garrison-building moves, not only
-  subsets of greedy's plan.
+### Phase B-next ✅ (done — and it revealed the ceiling)
+Shipped: focus-fire opponent model (attacks the player's planets, not nearest-affordable),
+horizon 6→30, and a synthesised `consolidate_defensive` action set. Self-play margin rose
+(+920 → +1033) with no regression — so it's a real if modest improvement to general play.
+
+**But it did NOT flip the long-horizon losses (seeds 5/9/32)** — search still picks `greedy_full`
+there. This is the empirical ceiling of shallow per-turn 1-ply lookahead for this game:
+- The collapse is driven by mid-game decisions (turn ~200–270), not the turn-100 expansion the
+  search evaluates; a feasible horizon can't bridge that gap.
+- The evaluator correctly rewards the production expansion brings, so expanding always wins the
+  short rollout.
+- The three losses pull in opposite directions (5 wants less expansion, 9/32 want more), so no
+  single eval/posture knob fixes all three (also why the A13 greedy tweak regressed).
+
+**Remaining levers (escalating cost):** much deeper search (a real tree/MCTS — likely needs the
+hot loop in C/numpy to fit the time budget in Python), or a **learned board evaluator** that
+encodes the strategic "thin empire = fragile" judgment rather than discovering it by rollout →
+that is Phase D.
 
 Original design notes (still the reference for the build):
 

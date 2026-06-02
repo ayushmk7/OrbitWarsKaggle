@@ -15,7 +15,7 @@ Live scorecard. Update after each benchmark / version bump.
 
 | Opponent | Result | Notes |
 |----------|--------|-------|
-| **self-play vs greedy** | **62.5%** (15-9), margin +920 | lookahead beats pure greedy head-to-head — the Phase-B gate |
+| **self-play vs greedy** | **62.5%** (10-6), margin +1033 | lookahead beats pure greedy head-to-head (Bnext: focus-fire opponent model, horizon 30, defensive set) |
 | `starter` (builtin sniper) | **87.5%** (35/40) | identical to greedy on the same seeds (picks `greedy_full` vs the weak sniper) — no regression |
 | `baseline` (frozen v1 self-play) | **100%** (40/40), margin +3267 | decisive vs pre-fix agent |
 | gym `expander` / `aggressive` / `turtle` | ~8/8 | weak scripted sparring; low signal |
@@ -55,12 +55,15 @@ Run: `PYTHONPATH=src python -m benchmark --games 60 --workers 8 --opponents star
 | Production race | 9 | Opponent grabs high-prod planets, out-produces; we plateau. | **Open** — Phase B. |
 | Early hoarding | 32 | Sits on 1 planet / many ships early. | **Open** — Phase B. |
 
-Finding: these are temporal/strategic. Shallow (6–12 turn) lookahead with the
-current weak opponent model does NOT flip them — the seed-5 collapse unfolds over
-~90 turns, far beyond the horizon, and the greedy opponent model never punishes
-overextension in-rollout. Lookahead currently picks `greedy_full` on these seeds
-(byte-identical to greedy). Closing them needs a longer horizon and/or a stronger
-opponent model (see ROADMAP Phase B-next).
+Finding (confirmed through Phase B-next): these resist shallow lookahead. We tried
+a focus-fire opponent model, horizon 30, and a synthesised defensive-consolidation
+action set — **still byte-identical losses** (search picks `greedy_full`). The
+collapse is driven by mid-game (turn ~200–270) decisions, not the turn-100
+expansion, and the evaluator correctly rewards the production expansion brings, so
+per-turn 1-ply lookahead can't resolve a strategy-level over-expansion punished
+100+ turns later. The three losses also pull in OPPOSITE directions (seed 5 wants
+less expansion; 9/32 want more), so no single eval knob fixes them. Real levers: a
+**learned evaluator (Phase D)** or far deeper search.
 
 ## Next
 
