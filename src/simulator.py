@@ -429,30 +429,36 @@ def evaluate(state: GameState, player: int) -> float:
 
 
 # ---------------------------------------------------------------------------
-# B5: opponent / continuation policy -- greedy nearest-affordable capture.
-# Used for enemy seats in every rollout tick and for our own continuation on
-# ticks after the first.
+# B5/Bnext: opponent / continuation policy. Each planet sends its surplus at the
+# best capturable target. With ``target_enemy`` set, the actor FOCUS-FIRES that
+# enemy's planets (attack preferred over neutral expansion) -- a competent
+# assault that punishes a thin/over-expanded empire in-rollout, which the old
+# nearest-affordable model never did. Used for enemy seats (target_enemy=player)
+# and for our own continuation (target_enemy=None -> plain expansion).
 # ---------------------------------------------------------------------------
-def greedy_actions(state: GameState, player: int) -> list:
+def greedy_actions(state: GameState, player: int, target_enemy=None) -> list:
     moves = []
     targets = [p for p in state.planets if p[P_OWNER] != player]
     for mp in state.planets:
         if mp[P_OWNER] != player:
             continue
-        surplus = mp[P_SHIPS] - max(2, mp[P_PROD])
+        reserve = max(1, mp[P_PROD]) if target_enemy is not None else max(2, mp[P_PROD])
+        surplus = mp[P_SHIPS] - reserve
         if surplus <= 0:
             continue
         best = None
-        best_d = float("inf")
+        best_key = None
         for t in targets:
-            need = t[P_SHIPS] + 1
-            if need > surplus:
+            if t[P_SHIPS] + 1 > surplus:
                 continue
             if geometry.shot_hits_sun((mp[P_X], mp[P_Y]), (t[P_X], t[P_Y])):
                 continue
             d = (t[P_X] - mp[P_X]) ** 2 + (t[P_Y] - mp[P_Y]) ** 2
-            if d < best_d:
-                best_d, best = d, t
+            # Focus-fire: prioritise capturing target_enemy's planets, nearest first.
+            attack_pref = 0 if (target_enemy is not None and t[P_OWNER] == target_enemy) else 1
+            key = (attack_pref, d)
+            if best_key is None or key < best_key:
+                best_key, best = key, t
         if best is not None:
             ang = math.atan2(best[P_Y] - mp[P_Y], best[P_X] - mp[P_X])
             moves.append([mp[P_ID], ang, best[P_SHIPS] + 1])
@@ -464,7 +470,41 @@ def greedy_actions(state: GameState, player: int) -> list:
 # Each set is a budget-valid SUBSET of greedy's chosen moves (plus the always-
 # present do_nothing). Search decides how much of greedy's plan to commit.
 # ---------------------------------------------------------------------------
-def build_action_sets(base_decision: dict, max_sets: int = 16) -> list:
+def _defensive_consolidation_moves(state: GameState, player: int) -> list:
+    """Pull surplus ships from safe backline planets toward the frontline (our
+    planets nearest the enemy). Greedy only generates this AFTER an enemy fleet
+    launches; synthesising it gives search a 'mass up / defend the lead' option
+    at the moment of over-expansion -- the one set that can pre-empt the
+    lead-then-collapse, since by the time greedy reacts the planets are gone."""
+    mine = [p for p in state.planets if p[P_OWNER] == player]
+    enemies = [p for p in state.planets if p[P_OWNER] >= 0 and p[P_OWNER] != player]
+    if len(mine) < 2 or not enemies:
+        return []
+
+    def near_enemy(p):
+        return min((p[P_X] - e[P_X]) ** 2 + (p[P_Y] - e[P_Y]) ** 2 for e in enemies)
+
+    ordered = sorted(mine, key=near_enemy)
+    cut = max(1, len(ordered) // 2)
+    frontline, backline = ordered[:cut], ordered[cut:]
+    moves = []
+    for src in backline:
+        send = src[P_SHIPS] - max(2, src[P_PROD])
+        if send <= 0:
+            continue
+        best, bd = None, float("inf")
+        for tgt in frontline:
+            if tgt is src or geometry.shot_hits_sun((src[P_X], src[P_Y]), (tgt[P_X], tgt[P_Y])):
+                continue
+            d = (tgt[P_X] - src[P_X]) ** 2 + (tgt[P_Y] - src[P_Y]) ** 2
+            if d < bd:
+                bd, best = d, tgt
+        if best is not None:
+            moves.append([src[P_ID], math.atan2(best[P_Y] - src[P_Y], best[P_X] - src[P_X]), send])
+    return moves
+
+
+def build_action_sets(base_decision: dict, state=None, player=0, max_sets: int = 18) -> list:
     cands = base_decision.get("candidates", [])
     chosen_ids = set(base_decision.get("chosen_candidate_ids", []))
     chosen = [c for c in cands if c.get("candidate_id") in chosen_ids]
@@ -485,6 +525,11 @@ def build_action_sets(base_decision: dict, max_sets: int = 16) -> list:
                                             if c.get("candidate_type") == "attack"]))
     if offense_moves:
         sets.append(("greedy_minus_riskiest", defenses + offense_moves[:-1] + consolidate))
+    # Synthesised defensive consolidation (the anti-collapse option).
+    if state is not None:
+        cons = _defensive_consolidation_moves(state, player)
+        if cons:
+            sets.append(("consolidate_defensive", defenses + cons))
     # Top-K single-target commitments (defenses always kept).
     for i, c in enumerate(offense[:4]):
         sets.append((f"only:{c.get('candidate_type')}->{c.get('target_planet_id')}",
@@ -506,15 +551,18 @@ def build_action_sets(base_decision: dict, max_sets: int = 16) -> list:
 
 def rollout(state: GameState, my_moves: list, horizon: int, player: int) -> float:
     s = state.clone()
+    # Enemies focus-fire `player`; our continuation just expands greedily.
     acts = {player: my_moves}
     for opp in range(s.num_players):
         if opp != player:
-            acts[opp] = greedy_actions(s, opp)
+            acts[opp] = greedy_actions(s, opp, target_enemy=player)
     step(s, acts)
     for _ in range(horizon - 1):
         if s.is_terminal():
             break
-        acts = {p: greedy_actions(s, p) for p in range(s.num_players)}
+        acts = {}
+        for p in range(s.num_players):
+            acts[p] = greedy_actions(s, p, target_enemy=(player if p != player else None))
         step(s, acts)
     return evaluate(s, player)
 
@@ -524,9 +572,9 @@ def rollout(state: GameState, my_moves: list, horizon: int, player: int) -> floa
 # ---------------------------------------------------------------------------
 import time as _time
 
-INITIAL_HORIZON = 6
-MAX_HORIZON = 12
-HORIZON_STEP = 3
+INITIAL_HORIZON = 12
+MAX_HORIZON = 30
+HORIZON_STEP = 6
 TIME_SAFETY = 0.8
 
 
@@ -534,7 +582,7 @@ def search_decision(obs, time_budget_ms: float, base_decision: dict):
     t0 = _time.perf_counter()
     player = _obs_get(obs, "player", 0)
     state = GameState.from_obs(obs)
-    action_sets = build_action_sets(base_decision)
+    action_sets = build_action_sets(base_decision, state, player)
 
     def elapsed_ms():
         return (_time.perf_counter() - t0) * 1000.0
