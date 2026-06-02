@@ -19,7 +19,7 @@ from pathlib import Path
 
 SRC_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SRC_DIR.parent
-AGENT_FILES = ["main.py", "geometry.py", "prediction.py"]
+AGENT_FILES = ["main.py", "geometry.py", "prediction.py", "simulator.py"]
 
 
 def build(out_path: Path) -> Path:

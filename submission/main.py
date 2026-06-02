@@ -12,7 +12,16 @@ except ModuleNotFoundError:
 Fleet = namedtuple("Fleet", "id owner x y angle from_planet_id ships")
 
 
-AGENT_VERSION = "solution_a_v4_orbit_intercept_fix"
+AGENT_VERSION = "solution_b_v1_lookahead"
+
+# Phase B: forward-simulation lookahead. Greedy generates candidate action-sets;
+# search simulates each and picks the best. USE_SIMULATOR=False -> pure greedy.
+USE_SIMULATOR = True
+SIM_DEFAULT_BUDGET_MS = 200.0   # used when remainingOverageTime is absent
+SIM_MIN_BUDGET_MS = 20.0        # below this, skip search (greedy fallback)
+SIM_MAX_BUDGET_MS = 600.0       # hard ceiling, well under the ~1s/turn limit
+SIM_OVERAGE_FRACTION = 0.02     # spend ~2% of remaining overage per turn
+
 MAX_TURNS = 500
 EARLY_GAME_END = 150
 LATE_GAME_START = 400
@@ -925,7 +934,7 @@ def _comet_remaining_life(comet_id, comets_data):
     return None
 
 
-def decide_with_trace(obs):
+def _greedy_decide(obs):
     started = time.perf_counter()
     decision = _empty_decision()
     moves = []
@@ -1240,6 +1249,38 @@ def decide_with_trace(obs):
         decision["runtime_ms"] = (time.perf_counter() - started) * 1000
 
     return {"moves": moves, "decision": decision}
+
+
+def _time_budget_ms(obs):
+    """How long search may run this turn. Spend a fraction of the carried-over
+    overage so we stay well under the per-turn cap across all 500 turns."""
+    overage = _obs_get(obs, "remainingOverageTime", None)
+    if overage is None:
+        return SIM_DEFAULT_BUDGET_MS
+    return max(SIM_MIN_BUDGET_MS, min(SIM_MAX_BUDGET_MS, overage * 1000.0 * SIM_OVERAGE_FRACTION))
+
+
+def decide_with_trace(obs):
+    """Greedy decision, then (if enabled) a forward-simulation lookahead that
+    picks the best subset of greedy's plan. Greedy is always the fallback, so
+    the agent can only tie-or-improve and never crashes."""
+    base = _greedy_decide(obs)
+    if not USE_SIMULATOR:
+        return base
+    try:
+        import simulator
+        budget = _time_budget_ms(obs)
+        if budget < SIM_MIN_BUDGET_MS:
+            base["decision"]["sim"] = {"used": False, "reason": "budget_floor"}
+            return base
+        moves, sim_trace = simulator.search_decision(obs, budget, base["decision"])
+        base["decision"]["sim"] = sim_trace
+        base["decision"]["chosen_moves"] = moves
+        base["moves"] = moves
+        return base
+    except Exception as exc:  # never let the simulator crash the agent
+        base["decision"].setdefault("sim", {})["error"] = f"{type(exc).__name__}: {exc}"
+        return base
 
 
 def agent(obs):
