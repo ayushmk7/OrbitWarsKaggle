@@ -28,11 +28,29 @@ So: bank the cheap wins, then build the simulator.
   stretch goal is to make them genuinely challenging, or replace with the Phase-B agent.)
 - **A5 Loss-class heuristic fixes** — attempted, regressed, **deferred to Phase B** (see above).
 
-## Phase B — Forward simulator + lookahead search  ← the 1000+ engine
+## Phase B — Forward simulator + lookahead search  ✅ (v1 shipped)
 
-Greedy becomes the *action-set generator*; a 1-ply search over candidate action-sets simulates
-each N turns and picks the best board. This naturally fixes the loss classes — it *sees* the
-collapse / production gap N turns out.
+Greedy is the *action-set generator*; a 1-ply search over candidate action-sets simulates each
+N turns and picks the best board. **Shipped in `solution_b_v1_lookahead`** — simulator is
+bit-exact (fidelity-tested), lookahead beats pure greedy 62.5% in self-play, no regression vs
+starter. `USE_SIMULATOR=False` reverts to greedy.
+
+**What v1 does NOT yet do:** flip the long-horizon losses (seeds 5/9/32). A 6–12 turn horizon
+can't see a ~90-turn collapse, and the nearest-affordable opponent model is too weak to punish
+overextension in-rollout, so on those seeds search just picks `greedy_full`. The value v1 adds is
+tactical (avoiding doomed launches within the horizon) — hence the self-play win but the
+starter-tie.
+
+### Phase B-next (tuning to extract the strategic wins)
+- **Stronger opponent model:** model the opponent with our own greedy candidate generator (or a
+  shallow search), not just nearest-affordable — so rollouts punish overextension.
+- **Longer / adaptive horizon:** deepen when a planet is contested; the collapse needs depth.
+- **Evaluator weights:** tune `W_VULN` / add an explicit overextension term so a thin lead scores
+  below a consolidated one.
+- **Richer action-sets:** include alternative targets and garrison-building moves, not only
+  subsets of greedy's plan.
+
+Original design notes (still the reference for the build):
 
 > Ground truth verified in `kaggle_environments/envs/orbit_wars/orbit_wars.py`: real collision is
 > `swept_pair_hit` (continuous swept-pair, **not** the static segment check the agent uses for

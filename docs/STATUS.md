@@ -4,22 +4,39 @@ Live scorecard. Update after each benchmark / version bump.
 
 ## Current agent
 
-- **Version:** `solution_a_v4_orbit_intercept_fix` (`src/main.py`)
-- **Class:** greedy 1-ply heuristic — score every (source, target), allocate globally, emit moves.
-- **Compute:** ~3.6 ms/turn of a ~1000 ms/turn Kaggle budget (≈0.4% used).
+- **Version:** `solution_b_v1_lookahead` (`src/main.py` + `src/simulator.py`)
+- **Class:** greedy generates candidate action-sets; a 1-ply forward-simulation
+  search picks the set that simulates best. Greedy is always a candidate and the
+  crash/timeout fallback, so search can only tie-or-beat greedy.
+- **Compute:** ~12–24 ms/turn (budget-capped at 160 ms), vs a ~1000 ms/turn limit.
+  `USE_SIMULATOR=False` reverts to pure greedy (`solution_a_v4`).
 
 ## Local benchmark (the real signal — NOT vs `random`)
 
 | Opponent | Result | Notes |
 |----------|--------|-------|
-| `starter` (builtin sniper) | **92%** (55/60) | up from 82.5% after the orbit-intercept fix |
-| `baseline` (frozen v1 self-play) | **100%** (30/30), margin +3167 | decisive vs pre-fix agent |
-| gym `expander` / `aggressive` / `turtle` | 8/8 each | weak scripted sparring; low signal |
-| Kaggle LB | mid-500s (pre-fix submission) | v4 not yet re-submitted |
+| **self-play vs greedy** | **62.5%** (15-9), margin +920 | lookahead beats pure greedy head-to-head — the Phase-B gate |
+| `starter` (builtin sniper) | **87.5%** (35/40) | identical to greedy on the same seeds (picks `greedy_full` vs the weak sniper) — no regression |
+| `baseline` (frozen v1 self-play) | **100%** (40/40), margin +3267 | decisive vs pre-fix agent |
+| gym `expander` / `aggressive` / `turtle` | ~8/8 | weak scripted sparring; low signal |
+| Kaggle LB | mid-500s (pre-fix submission) | v4/v1-lookahead not yet re-submitted |
+
+Lookahead **ties** greedy against the weak `starter` (the 6–12 turn horizon + weak
+opponent model can't reveal downside there) but **wins 62.5% head-to-head** — the
+signal that the tactical lookahead (avoiding doomed launches / overextension within
+the horizon) helps against LB-grade opponents that play more like our own greedy.
 
 Run: `PYTHONPATH=src python -m benchmark --games 60 --workers 8 --opponents starter,baseline,expander,aggressive,turtle`
 
-## Shipped recently
+## Shipped recently (Phase B)
+
+- **Forward simulator** (`simulator.py`): bit-exact re-implementation of the env
+  interpreter (verified tick-exact vs the real env on 8 seeds incl. 3 full
+  499-turn games with comets; `swept_pair_hit` parity on 10k random inputs).
+- **1-ply lookahead** wired behind `USE_SIMULATOR` with greedy fallback. Beats
+  pure greedy 62.5% in self-play; no regression vs starter.
+
+## Earlier
 
 - **Orbit-intercept off-by-one fix** (commit 8c8838a): env actual position at step S =
   `predict(initial, av, S-1)`. Aiming one step ahead made fleets slip past orbiting planets
@@ -38,10 +55,18 @@ Run: `PYTHONPATH=src python -m benchmark --games 60 --workers 8 --opponents star
 | Production race | 9 | Opponent grabs high-prod planets, out-produces; we plateau. | **Open** — Phase B. |
 | Early hoarding | 32 | Sits on 1 planet / many ships early. | **Open** — Phase B. |
 
-Finding: these are temporal/strategic and resist greedy 1-ply patching — the reason Phase B
-(forward-sim lookahead) is the real lever. See `ROADMAP.md`.
+Finding: these are temporal/strategic. Shallow (6–12 turn) lookahead with the
+current weak opponent model does NOT flip them — the seed-5 collapse unfolds over
+~90 turns, far beyond the horizon, and the greedy opponent model never punishes
+overextension in-rollout. Lookahead currently picks `greedy_full` on these seeds
+(byte-identical to greedy). Closing them needs a longer horizon and/or a stronger
+opponent model (see ROADMAP Phase B-next).
 
 ## Next
 
-1. Re-submit v4 to Kaggle (bank the elimination-cluster fix). _Blocked previously by a Kaggle API 500._
-2. Build Phase B simulator + lookahead (`ROADMAP.md`).
+1. Re-submit to Kaggle (bank orbit fix + lookahead). _Blocked previously by a Kaggle API 500._
+2. Phase B tuning to extract more from lookahead and attack the long-horizon losses:
+   stronger opponent model (model the opponent with our own greedy generator),
+   longer/adaptive horizon, evaluator weight tuning (esp. `W_VULN`), and richer
+   action-sets (alternative targets, not only subsets of greedy's plan).
+3. Phase D (learning) remains deferred — see `ROADMAP.md`.
